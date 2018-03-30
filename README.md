@@ -8,6 +8,11 @@
 Our app aims to bridge the gap in communication between students and administration by providing a forum for students to collectively voice their concerns. Students can create new pittitions, or sign, comment, and share existing ones. Members of the administration would have the ability to close, accept, and reject pittitions based on how many signatures it accrued, or how feasible the problem is to solve.
 </p>
 
+### Tech Stack
+<p>Pittition was built using the MERN Stack (MongoDB, Express, React native, Node.js) as well as Redux</p>
+
 <img src="http://niksingh.net/img/PittitionHome.png" width="425" /> <img src="http://niksingh.net/img/PittitionPage.png" width="425" />
+
+<img src="http://niksingh.net/img/PittitionLogin.png" width="425" /> <img src="http://niksingh.net/img/PittitionUpdate.png" width="425" />
 
 [View demo video here](https://www.youtube.com/watch?v=3CFOHVC-k0w)

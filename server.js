@@ -200,7 +200,7 @@ app.put('/follow/:pittitionId', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-
+  console.log("HERE");
   // TODO find how to use similar to where once I have access to internet
   User.find().limit(10).sort({ date: -1 }).exec( (error, users) => {
     var user =  "error"
@@ -220,7 +220,7 @@ app.use(function (req, res, next) {
   res.status(404).send("404 Page Not Found");
 });
 
-const server = app.listen(3000, '10.215.57.126', () => {
+const server = app.listen(3000, '192.168.1.165', () => {
   const { address, port } = server.address();
   console.log(`Listening at http://${address}:${port}`);
 });
