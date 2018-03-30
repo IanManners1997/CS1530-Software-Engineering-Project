@@ -17,8 +17,8 @@ Our app aims to bridge the gap in communication between students and administrat
 ### Demo Video
 [View it here](https://www.youtube.com/watch?v=3CFOHVC-k0w)
 
-<img src="http://niksingh.net/img/PittitionLogin.png" width="500" /> <img src="http://niksingh.net/img/PittitionHome.png" width="500" /> 
-<img src="http://niksingh.net/img/PittitionPage.png" width="500" /><img src="http://niksingh.net/img/PittitionUpdate.png" width="500" />
+<img src="http://niksingh.net/img/PittitionLogin.png" width="425" /> <img src="http://niksingh.net/img/PittitionHome.png" width="425" /> 
+<img src="http://niksingh.net/img/PittitionPage.png" width="425" /><img src="http://niksingh.net/img/PittitionUpdate.png" width="425" />
 
 
 
