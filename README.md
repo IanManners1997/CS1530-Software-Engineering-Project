@@ -3,6 +3,6 @@
 
 ![alt text](http://niksingh.net/img/PittitionHome.png )
 
-<img src="http://niksingh.net/img/PittitionPage.png" width="200">
+<img src="http://niksingh.net/img/PittitionPage.png" width="600">
 
 [View demo video here](https://www.youtube.com/watch?v=3CFOHVC-k0w)
