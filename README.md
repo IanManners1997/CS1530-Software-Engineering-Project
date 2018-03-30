@@ -23,5 +23,7 @@ Our app aims to bridge the gap in communication between students and administrat
 ### Next steps
 <p>App is fully functional, so there are only a few steps to fully distribute the app</p>
 1. Connect with Pitt login system
+
 2. Switch from hosting locally to AWS
+
 3. Submit app to respective app stores (iOS and Android)
