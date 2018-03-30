@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Platform, ScrollView, TouchableWithoutFeedback, TextInput, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Platform, ScrollView, TouchableWithoutFeedback, TextInput, ActivityIndicator, Keyboard } from 'react-native';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 
 import TimerMixin from 'react-timer-mixin';
@@ -22,17 +22,19 @@ class LoginScreen extends React.Component {
 // login(this.state.userName.toLowerCase(), this.state.password.toLowerCase())
   handleLogIn(navigation) {
      this.setState({modalVisible: true});
-
+     Keyboard.dismiss();
+     
      // TODO: FOR DEVELOPMENT PURPOSES ONLY, REMOVE THIS WHEN FINISHED
-     if(this.state.userName === '' && this.state.password === '') {
-         this.props.dispatch(
-            login("admin", "admin")
-      );
-     }else {
+     // if(this.state.userName === '' && this.state.password === '') {
+     //     this.props.dispatch(
+     //        login("admin", "admin")
+     //  );
+     // }
+     // else {
       this.props.dispatch(
         login(this.state.userName.toLowerCase(), this.state.password.toLowerCase())
       );
-     }
+     // }
      
   }
   renderModelContentLoading () {

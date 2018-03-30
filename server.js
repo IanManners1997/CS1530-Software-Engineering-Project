@@ -70,10 +70,15 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 app.use(timeout(10000));
 
-
+require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+  console.log('addr: '+ add);
+})
+app.get('/', (req, res) => {
+  console.log("Called!")
+})
 // TODO: Parameters that indicate specific limit, latest date, still open, 
 // TODO: Refactor this
-app.get('/getPittitions', (req, res) => {
+app.get('/Pittition', (req, res) => {
   const pts = [];
   var requests = 0;
   Pittition.find().limit(10).sort({ date: -1 }).exec( (error, pittitions) => {
@@ -119,7 +124,7 @@ app.get('/getPittitions', (req, res) => {
 });
 
 // All of the pittition schema/model information should be in the post body
-app.post('/createPittition', (req, res) => {
+app.post('/Pittition', (req, res) => {
   var pt = new Pittition({
     title: req.body.title,
     description: req.body.description,
@@ -137,6 +142,18 @@ app.post('/createPittition', (req, res) => {
   });
 });
 
+app.delete('/Pittition/:pittitionId', (req, res) => {
+  try {
+    Pittition.deleteOne( { "_id" : req.params.pittitionId } )
+    .exec((error, result) => {
+      if(error)   res.send(error);
+      else        res.send(result);
+    });
+  } catch (e) {
+   res.send(e)
+  }
+});
+
 app.post('/comment/:pittitionId', (req, res) => {
   const newComment = new Comment({ user: req.body.user, img_url: req.body.img_url, comment: req.body.comment, userType: req.body.userType, type: req.body.type, pittitionId: req.body.pittitionId, date: Date.now() });
   newComment.save(function (err) {
@@ -146,7 +163,6 @@ app.post('/comment/:pittitionId', (req, res) => {
 });
 
 app.post('/like/:pittitionId', (req, res) => {
-
   Pittition.update(
     { _id: req.params.pittitionId },
     { $set: { likes: req.body.likes } }
@@ -157,11 +173,8 @@ app.post('/like/:pittitionId', (req, res) => {
   
 });
 
-app.post('/share/:pittitionId', (req, res) => {
-
-});
-
 app.post('/status/:pittitionId', (req, res) => {
+  console.log("IN HERE!!");
   Pittition.update(
     { _id: req.params.pittitionId },
     { $set: { 
@@ -187,6 +200,7 @@ app.put('/follow/:pittitionId', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
+
   // TODO find how to use similar to where once I have access to internet
   User.find().limit(10).sort({ date: -1 }).exec( (error, users) => {
     var user =  "error"
@@ -201,27 +215,12 @@ app.post('/login', (req, res) => {
   });
 });
 
-app.delete('/delete/:pittitionId', (req, res) => {
-  try {
-    Pittition.deleteOne( { "_id" : req.params.pittitionId } )
-    .exec((error, result) => {
-      if(error)   res.send(error);
-      else        res.send(result);
-    });
-  } catch (e) {
-   res.send(e)
-  }
-});
-
-app.post('/close/:pittitionId', (req, res) => {
-
-});
 
 app.use(function (req, res, next) {
   res.status(404).send("404 Page Not Found");
 });
 
-const server = app.listen(3000, () => {
+const server = app.listen(3000, '10.215.57.126', () => {
   const { address, port } = server.address();
   console.log(`Listening at http://${address}:${port}`);
 });

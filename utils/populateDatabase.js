@@ -55,41 +55,46 @@ var CommentSchema = new Schema({
   date: Date,
 })
 
+function appendArray(size) {
+  const array = [];
+  for(var i = 0; i < size; i++) array.push('');
+  return array;
+}
 // Compile model from schema
 var Pittition = mongoose.model('PittitionModel', PittitionSchema);
 var User = mongoose.model('UserModel', UserSchema);
 var Comment = mongoose.model('CommentModel', CommentSchema);
+const largeArray = []
+const mediumArray = []
+
+for(var i = 0; i < 51; i++) mediumArray.push('');
+for(var i = 0; i < 51; i++) mediumArray.push('');
+for(var i = 0; i < 142; i++) largeArray.push(['']);
+
 const pittitions = [
   {
     title: "Departmental Exams",
     description: "I believe departmental exams are ineffective at gauging a student's knowledge on the course material. Every professor teaches differnet material, emphasizes different conceps.",
     author: "jhd31",
     img_url: 'http://niksingh.net/img/matt.jpg',
-    date: Date.now(),
+    date: new Date(Date.now() - 92012020),
     status: 'waiting',
-    updates: [{
-      user: 'admin',
-      img_url: 'http://niksingh.net/img/shridhar.jpg',
-      stateBefore: 'waiting',
-      stateAfter: 'In process',
-      comment: 'This idea is infeasible',
-      date: Date.now(),
-    }],
-    likes: ["nis80", "chz75"],
+    updates: [],
+    likes: ["nis80", "chz75"].concat(appendArray(29)),
     followers: ['demo', 'nis80'],
-    shares: 3
+    shares: 0
   },
   {
     title: "Gym on Lower Campus!",
     description: "Both the Pete and Trees gyms are on upper campus and there should be a gym built somewhere on lower campus.",
-    author: "jhd31",
+    author: "bau75",
     img_url: 'http://niksingh.net/img/shridhar.jpg',
     date: Date.now(),
     status: 'waiting',
     updates: [],
-    likes: ["nis80", "chz75"],
+    likes: ["nis80", "chz75"].concat(appendArray(15)),
     followers: ['demo', 'nis80'],
-    shares: 3
+    shares: 0
   },
   {
     title: "Another 10A Bus",
@@ -99,7 +104,7 @@ const pittitions = [
     date: Date.now(),
     status: 'waiting',
     updates: [],
-    likes: [],
+    likes: ["nis80", "chz75"].concat(appendArray(8)),
     comments: [{
       date: Date.now() + 1000,
       user: "chz75",
@@ -126,26 +131,29 @@ const pittitions = [
       user: 'chz75',
       comment: 'At the very least, they could lower the costs of food in on campus convenient stores. Everything is double the cost of an off campus convenient store.'
     }],
-    likes: ["nis80", "chz75", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "","", "", ""],
+    likes: [],
     followers: ['demo', 'nis80'],
-    shares: 181
+    shares: 0
   },
   {
-    title: "Add more CS courses",
-    description: "There is a wide variety of courses to take at Pitt, but I am unable to sign up for any because they fill up so fast",
-    img_url: 'http://niksingh.net/img/pic.jpg',
+    title: "Add more CS sections",
+    description: "There is a wide variety of courses to take at Pitt, but I am unable to sign up for any because they fill up so fast. This is especially true for core classes such as CS1550",
+    img_url: 'http://niksingh.net/img/shridhar2.jpg',
     solution: "Add more courses for CS 1600+",
     author: "qjs49",
     date: new Date(Date.now() - 201202030),
-    status: 'waiting',
-    likes: ["nis80", "chz75", "ahs213"],
-    comments: [{
-      date: Date.now(),
-      user: "chz75",
-      comment: "I agree"
+    status: 'In Process',
+    likes: ["nis80", "chz75"].concat(appendArray(52)),
+    updates: [{
+      stateBefore: 'waiting',
+      stateAfter: 'In Process',
+      user: 'Pitt Admin',
+      date: new Date(Date.now() - 50120203),
+      img_url: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50',
+      comment: 'Thank you for bringing this issue to our attention. We are currently looking to open up more sections!'
     }],
     followers: [],
-    shares: 12
+    shares: 0
   },
 
 ]
@@ -155,14 +163,6 @@ const users = [
   {
     userName: 'demo_student',
     password: 'demo_password',
-    firstName: 'John',
-    lastName: 'Doe',
-    img_url: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50',
-    type: 'student'
-  },
-  {
-    userName: 'demo',
-    password: 'demo',
     firstName: 'John',
     lastName: 'Doe',
     img_url: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50',
@@ -183,33 +183,57 @@ const users = [
     lastName: 'Singh',
     img_url: 'http://niksingh.net/img/pic.jpg',
     type: 'student'
+  },
+  {
+    userName: 'abc123',
+    password: 'password',
+    firstName: 'John',
+    lastName: 'Doe',
+    img_url: 'http://niksingh.net/img/pic.jpg',
+    type: 'student'
   }
 
 ]
 const comments = [
   {
-    user: "nis80",
+    user: "qdo93",
     userType: "student",
     type: "regular",
-    comment: "This is a great idea!",
-    img_url: 'http://niksingh.net/img/pic.jpg',
-    date: Date.now(),
+    comment: "I second adding more sections of CS1550",
+    img_url: 'http://niksingh.net/img/neel.jpg',
+    date: new Date(Date.now() - 60020000),
   },
   {
-    user: "John Doe",
-    userType: "admin",
-    type: "pinned",
-    comment: "Just letting everyone know we are working on it",
-    img_url: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50',
-    date: Date.now(),
-  },
-  {
-    user: "John Doe",
-    userType: "admin",
+    user: "jhd71",
+    userType: "student",
     type: "regular",
-    comment: "Good idea!!",
-    img_url: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50',
-    date: new Date(Date.now() - 600000),
+    comment: "I agree!",
+    img_url: 'http://niksingh.net/img/matt.jpg',
+    date: new Date(Date.now() - 48049200),
+  },
+  {
+    user: "tsi74",
+    userType: "student",
+    type: "regular",
+    comment: "I was only able to sign up for a single CS course because everything else was full",
+    img_url: 'http://niksingh.net/img/neel2.jpg',
+    date: new Date(Date.now() - 190212002),
+  },
+  {
+    user: "bau75",
+    userType: "student",
+    type: "regular",
+    comment: "Yes please!",
+    img_url: 'http://niksingh.net/img/shridhar.jpg',
+    date: new Date(Date.now() - 19020202),
+  },
+  {
+    user: "cis29",
+    userType: "student",
+    type: "regular",
+    comment: "Just signed!",
+    img_url: 'http://niksingh.net/img/matt2.jpg',
+    date: new Date(Date.now() - 1902002),
   },
 ]
 

@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, Modal, TouchableWithoutFeedback, Picker, TextInput, Image } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Modal, TouchableWithoutFeedback, Picker, TextInput, Image, RefreshControl, KeyboardAvoidingView, Alert } from 'react-native';
 import { connect } from 'react-redux';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 import CustomModal from 'react-native-modal'
 import { fetchPittitionFromAPI, getActivePittition, updatePittitionStatusAPI, deletePittitionFromAPI, followPittitionAPI } from '../../redux/actions';
 
@@ -44,10 +45,12 @@ class HomeScreen extends React.Component {
       modalVisible: false,
       sidebarVisible: false,
       pittitions: props.pittition.pittition,
+      pittitionFetcher: props.pittition,
       statusModalVisible: false,
       activePittitionOpen: 0,
       activePittitionStatus: 0,
       statusUpdateMessage: '',
+      refreshing: false,
     }
     this.handleOpenClose = this.handleOpenClose.bind(this);
     this.handleSidebarToggle = this.handleSidebarToggle.bind(this);
@@ -64,10 +67,10 @@ class HomeScreen extends React.Component {
       fetchPittitionFromAPI()
     );
   }
+
   componentWillReceiveProps(nextProps) {
-    console.log("NEXT PROPS")
-    console.log(nextProps);
     this.setState({
+      pittitionFetcher: nextProps.pittition,
       pittitions: this.initPittitions(nextProps.pittition.pittition),
       activePittitionStatus: pittitionStatuses.findIndex(function(status) {
         if(nextProps.pittition.pittition.length === 0) return false;
@@ -77,6 +80,11 @@ class HomeScreen extends React.Component {
     })
   }
   
+  onRefresh() {
+    this.props.dispatch(
+      fetchPittitionFromAPI()
+    );
+  }
 
   handleOpenClose() {
     this.setState({
@@ -108,6 +116,7 @@ class HomeScreen extends React.Component {
       pittitions.splice(this.state.activePittitionOpen, 1);
       this.setState({ pittitions, statusModalVisible: false, activePittitionOpen: 0 });
   }
+
   handleFollowPittition() {
     const pittitions = this.state.pittitions;
     const activePittition = pittitions[this.state.activePittitionOpen];
@@ -206,7 +215,7 @@ class HomeScreen extends React.Component {
       );
       pittitions[index].status = newStatus;
 
-      this.setState({ pittitions, statusModalVisible: false });
+      this.setState({ pittitions, statusUpdateMessage: '', statusModalVisible: false });
     }
   }
 
@@ -217,10 +226,6 @@ class HomeScreen extends React.Component {
     this.setState({ pittitions });
   }
   render() {
-    console.log("this.state.")
-    console.log(this.state);
-    const img_url = "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50";
-
     const { pittition, isFetching } = this.props.pittition;
     const activePittition = pittition[this.state.activePittitionOpen];
 
@@ -231,8 +236,13 @@ class HomeScreen extends React.Component {
     } catch(error) {
       user = {}
     }
+    // !this.props.pittition.isFetching &&
+  
     const menu = this.state.sidebarVisible ? <MySideMenu user={user} navigation={this.props.navigation} /> : <Text></Text>;
-    if(this.state.pittitions === undefined || this.state.pittitions.length === 0) {
+     if(this.state.pittitionFetcher.isFetching) {
+      return(<View />)
+    }
+    if( !this.state.pittitionFetcher.isFetching && (this.state.pittitions === undefined || this.state.pittitions.length === 0)) {      
       return ( 
         <SideMenu menu={menu} isOpen={this.state.sidebarVisible} onChange={isOpen => this.handleSidebarToggle(isOpen)}>
           <AppBar navigation={this.props.navigation} sortByPopularity={this.sortByPopularity} sortByDate={this.sortByDate} handleOpen={this.handleOpenClose} handleSidebarToggle={this.handleSidebarToggle} />
@@ -256,8 +266,14 @@ class HomeScreen extends React.Component {
 
           <AppBar navigation={this.props.navigation} sortByPopularity={this.sortByPopularity} sortByDate={this.sortByDate} handleOpen={this.handleOpenClose} handleSidebarToggle={this.handleSidebarToggle} />
 
-          <ScrollView style={scrollViewStyle} >
-           {/* <Trending /> */}
+          <ScrollView style={scrollViewStyle} 
+          refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this.onRefresh.bind(this)} />
+        }
+          >
+          
             {
               this.state.pittitions.map(function(pitt, i){
 
@@ -281,7 +297,7 @@ class HomeScreen extends React.Component {
                         updates={pitt.updates}
                         likes={pitt.likes}
                         handleClickOption={this_pt.handleClickOption} 
-                        handleOpenCloseStatus={this_pt.handleOpenCloseStatus}/>
+                        handleOpenCloseStatus={this_pt.handleOpenCloseStatus} />
                     </View>
                   </TouchableWithoutFeedback>
                 )
@@ -303,7 +319,7 @@ class HomeScreen extends React.Component {
 
           <Modal visible={this.state.statusModalVisible}  animationType={'slide'}>
               <View style={styles.modalStyle}>
-                <View style={{ flexDirection: 'column', flex: 0.35, backgroundColor: '#42A5F5', paddingBottom: 20}}>
+                <View style={{ flexDirection: 'column', flex: height > 700 ? 0.35 : 0.5, backgroundColor: '#42A5F5', paddingBottom: 20}}>
                   
                   <View style={{ backgroundColor: '#42A5F5', height: 50 }}/>
                   <View style={{ flexDirection: 'row', flex: 0.6, alignItems: 'center', paddingLeft: 20, backgroundColor: '#42A5F5' }}>
@@ -324,7 +340,7 @@ class HomeScreen extends React.Component {
                       <Text style={{ fontSize: 14, color: 'white', marginLeft: 0 }}>{activePittition ? activePittition.author : ''}</Text>
                     </View>
                   </View>
-                  <View style={{ backgroundColor: '#42A5F5', marginTop: 10, paddingLeft: 20}}>
+                  <View style={{ backgroundColor: '#42A5F5', marginTop: 10, paddingRight: 10}}>
                     <Text style={{ fontSize: 14, color: 'white', fontWeight: '600', paddingLeft: 20 }}>{activePittition.description}</Text>
                   </View>
                 </View>
@@ -362,19 +378,22 @@ class HomeScreen extends React.Component {
                     )
                   })
                 }
-                  <View style={{ flexDirection: 'row', flex: 1 }}>
+               
+                   <KeyboardAwareScrollView>
                     <TextInput
-                      style={{ padding: 10, width: '100%', height: '100%', backgroundColor: '#F7F8FC', height: 100 }}
+                      style={{ padding: 10, position: 'relative', width: '100%', backgroundColor: '#F7F8FC', height: 100 }}
                       value={this_pt.state.statusUpdateMessage}
                       onChangeText={(statusUpdateMessage) => this_pt.setState({ statusUpdateMessage })}
                       placeholder="Reason" 
                       multiline={true}/>
-                  </View>
+                  </KeyboardAwareScrollView>
+               
                   <TouchableWithoutFeedback  onPress={ () => {this_pt.handleUpdateStatus()}}>
                     <View style={{ backgroundColor: '#42A5F5', height: 60, alignItems: 'center', justifyContent: 'center' }}>
                       <Text style={{ color: 'white', alignSelf: 'center', fontSize: 20}}>Update status</Text>
                     </View>
                   </TouchableWithoutFeedback>
+
                 </ScrollView>
                 </View>
               </View>

@@ -6,7 +6,8 @@ import {
   FETCHING_ACTIVE_PITTITION,
   ADDING_COMMENT, ADDING_COMMENT_SUCCESS, ADDING_COMMENT_FAILURE,
   UPDATING_PITTITION_STATUS, UPDATING_PITTITION_STATUS_SUCCESS, UPDATING_PITTITION_STATUS_FAILURE,
-  FOLLOWING_PITTITION, FOLLOWING_PITTITION_SUCCESS, FOLLOWING_PITTITION_FAILURE
+  FOLLOWING_PITTITION, FOLLOWING_PITTITION_SUCCESS, FOLLOWING_PITTITION_FAILURE,
+  IP
 } from '../utils/constants';
 
 
@@ -17,7 +18,7 @@ export function login(userName, password) {
     let request=new XMLHttpRequest();
     dispatch(loggingIn())
     return new Promise(function(resolve, reject) {
-      request.open('POST', 'http://localhost:3000/login', true);
+      request.open('POST', IP + 'login/', true);
       request.setRequestHeader('Content-Type', 'application/JSON');
       request.send(JSON.stringify({
          userName: userName,
@@ -82,9 +83,8 @@ export function getActivePittitionSuccess(data) {
 // Retrieving Pittitions
 export function fetchPittitionFromAPI() {
   return (dispatch) => {
-    console.log("FETCHING");
     dispatch(getPittition())
-    fetch('http://localhost:3000/getPittitions')
+    fetch(IP + 'Pittition')
     .then(data => data.json())
     .then(json => {
       dispatch(getPittitionSuccess(json))
@@ -119,7 +119,7 @@ export function deletePittitionFromAPI(pittitionId) {
     dispatch(deletePittition())
     let request=new XMLHttpRequest();
     return new Promise(function(resolve, reject) {
-      request.open('DELETE', 'http://localhost:3000/delete/' + pittitionId, true);
+      request.open('DELETE', IP + 'Pittition/' + pittitionId, true);
       request.setRequestHeader('Content-Type', 'application/JSON');
       request.send()
     })
@@ -145,7 +145,7 @@ export function addPittitionToAPI(pittition) {
   return (dispatch) => {
     dispatch(addPittition())
     return new Promise(function(resolve, reject) {
-      request.open('POST', 'http://localhost:3000/createPittition', true);
+      request.open('POST', IP + 'Pittition/', true);
       request.setRequestHeader('Content-Type', 'application/JSON');
       request.send(JSON.stringify({
           title: pittition.title,
@@ -188,7 +188,7 @@ export function updatePittitionStatusAPI(pittitionId, status, updates) {
   return (dispatch) => {
     dispatch(updatePittitionStatus())
     return new Promise(function(resolve, reject) {
-      request.open('POST', 'http://localhost:3000/status/' + pittitionId, true);
+      request.open('POST', IP + 'status/' + pittitionId, true);
       request.setRequestHeader('Content-Type', 'application/JSON');
       request.send(JSON.stringify({
         status,
@@ -225,7 +225,7 @@ export function followPittitionAPI(pittitionId, followers) {
   return (dispatch) => {
     dispatch(followPittition())
     return new Promise(function(resolve, reject) {
-      request.open('PUT', 'http://localhost:3000/follow/' + pittitionId, true);
+      request.open('POST', IP + 'follow/' + pittitionId, true);
       request.setRequestHeader('Content-Type', 'application/JSON');
       request.send(JSON.stringify({
           followers
@@ -266,7 +266,7 @@ export function addCommentToPittition(pittition, comment) {
 
     dispatch(addComment())
     return new Promise(function(resolve, reject) {
-      request.open('POST', 'http://localhost:3000/comment/' + pittition._id, true);
+      request.open('POST', IP + 'comment/' + pittition._id, true);
       request.setRequestHeader('Content-Type', 'application/JSON');
       request.send(JSON.stringify({
           user: comment.user,

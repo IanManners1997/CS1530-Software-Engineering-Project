@@ -5,6 +5,7 @@ import Moment from 'moment';
 import Modal from "react-native-modal";
 
 import { height, width } from '../../utils/getDimensions';
+import { IP } from '../../utils/constants';
 
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FoundationIcon from 'react-native-vector-icons/Foundation';
@@ -58,7 +59,7 @@ export default class Pittition extends React.Component {
         'Content-Type': 'application/json',
       }
     }
-    fetch('http://localhost:3000/like/' + this.state.id, data)
+    fetch(IP + 'like/' + this.state.id, data)
         .then(response => {
           response.json()
         })
@@ -144,14 +145,14 @@ export default class Pittition extends React.Component {
           <Image
             style={{ alignSelf: 'center', width: 50, height: 50, borderRadius: 25}}
             source={{uri: img_url }} />
-          <View style={{ padding: 5 }}>
-            <Text style={{ fontSize: 16, fontWeight: '400', marginLeft: 5 }}>{title}</Text>
+          <View style={{ padding: 5, flex: 1, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+            <Text style={{ fontSize: 16, fontWeight: '400', marginLeft: 5, }}>{title}</Text>
             <Text style={{ fontSize: 14, color: '#9E9E9E', marginLeft: 5 }}>{author}</Text>
           </View>
           <TouchableWithoutFeedback onPress={() => { this.props.handleClickOption(this.props.num) }}>
-          <View style={{ flex: 1, alignSelf: 'flex-start', alignItems: 'flex-end', padding: 10 }}>
-            <ModalDropdown onSelect={(idx, value) => this.props.handleOpenCloseStatus(idx, value)} onDropdownWillShow={() => { this.props.handleClickOption(this.props.num) }} options={options}  renderRow={this.renderRow.bind(this)} style={{ height: 50}} dropDownStyle={{ height: 50 }}>
-              <SimpleLineIcon name="options-vertical" size={18} color={C_UNSELECTED} />
+          <View style={{ flex: 0.1, alignSelf: 'flex-start', alignItems: 'flex-end', padding: 10 }}>
+            <ModalDropdown onSelect={(idx, value) => this.props.handleOpenCloseStatus(idx, value)} onDropdownWillShow={() => { this.props.handleClickOption(this.props.num) }} options={options}  renderRow={this.renderRow.bind(this)} style={{ height: 50 }} dropDownStyle={{ height: 50 }}>
+              <SimpleLineIcon name="options-vertical" size={18} color={C_UNSELECTED} style={{ width: 50, height: 25, alignSelf: 'center', textAlign: 'right' }}/>
             </ModalDropdown>
           </View>
           </TouchableWithoutFeedback>

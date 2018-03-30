@@ -14,7 +14,7 @@ import ProfileScreen from './containers/ProfileScreen';
 import LoginScreen from './containers/LoginScreen';
 import PittitionScreen from './containers/PittitionScreen';
 import AppBar from './components/AppBar';
-// import reducer './redux/reducers'
+
 
 import {  
   StackNavigator,
@@ -36,9 +36,15 @@ const store = createStore( rootReducer, applyMiddleware( thunkMiddleware ));
 const Navigation = StackNavigator({
   Login: { 
     screen: LoginScreen,
+    navigationOptions: {
+      gesturesEnabled: false,
+    },
   },
   Home: { 
     screen: HomeScreen,
+    navigationOptions: {
+      gesturesEnabled: false,
+    },
   },
   PittitionScreen: {
     screen: PittitionScreen,

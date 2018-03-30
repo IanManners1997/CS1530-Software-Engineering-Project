@@ -10,6 +10,7 @@ import SideMenu from 'react-native-side-menu';
 import Comment from '../../components/Comment';
 
 import { height, width } from '../../utils/getDimensions';
+import { IP } from '../../utils/constants';
 
 const C_UNSELECTED = '#BDBDBD';
 const C_SELECTED = '#64B5F6';
@@ -72,7 +73,7 @@ class PittitionScreen extends React.Component {
         'Content-Type': 'application/json',
       }
     }
-    fetch('http://localhost:3000/like/' + this.state.pittition._id, data)
+    fetch(IP + 'like/' + this.state.pittition._id, data)
         .then(response => {
           response.json()
         })
@@ -93,9 +94,8 @@ class PittitionScreen extends React.Component {
 
     return renderedComments;
   }
+
   renderUpdates(updates) {
-    console.log("UPDAETS")
-    console.log(updates);
     const renderedUpdates = updates.map(function(comment, i) {
       return (
         <Comment key={i} img_url={comment.img_url} user={comment.user} posted={comment.date} comment={comment.comment} stateBefore={comment.stateBefore} stateAfter={comment.stateAfter} admin={comment.userType === 'admin'} isUpdate/>
@@ -103,9 +103,8 @@ class PittitionScreen extends React.Component {
     })
     return renderedUpdates;
   }
-  render() {  
-    const img_url = "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50";
 
+  render() { 
     const { activePittition } = this.props.activePittition;
 
     const comments = this.sortComments(activePittition.comments);
@@ -132,7 +131,7 @@ class PittitionScreen extends React.Component {
  
     const SIGN_COLOR = this.state.liked ? C_SELECTED : C_UNSELECTED
     
-    //#FF9800
+
     return (
       <View style={{ flexDirection: 'column', flex: 1, backgroundColor: 'white' }}>
         <View style={{ flexDirection: 'row', alignSelf: 'center', justifyContent: 'flex-start', alignItems: 'center', paddingTop: 50, backgroundColor: '#42A5F5', width: '100%'}}>
@@ -186,22 +185,18 @@ class PittitionScreen extends React.Component {
         </View>
         
         <ScrollView>
-       {/* <Text style={{ fontStyle: 'italic', fontSize: 16, color: 'gray', paddingLeft: 30, paddingTop: 10 }}>Pinned</Text>*/}
-        
-
-        { postToRender }
+          {postToRender}
         </ScrollView>
-         <KeyboardAvoidingView behavior="padding" style={{ flexDirection: 'row'}}>
+
+        <KeyboardAvoidingView behavior="padding" style={{ flexDirection: 'row'}}>
           <TextInput
-              style={{ padding: 10, position: 'relative', width: '100%', height: 50, backgroundColor: '#F7F8FC' }}
-              value={this.state.comment}
-              onChangeText={(comment) => this.setState({comment})}
-              onSubmitEditing={this.handleAddComment}
-              placeholder="Comment"
-              ref="comment"
-              returnKeyType="done">
-          </TextInput>
-  
+            style={{ padding: 10, position: 'relative', width: '100%', height: 50, backgroundColor: '#F7F8FC' }}
+            value={this.state.comment}
+            onChangeText={(comment) => this.setState({comment})}
+            onSubmitEditing={this.handleAddComment}
+            placeholder="Comment"
+            ref="comment"
+            returnKeyType="done" />
         </KeyboardAvoidingView>
       </View>
     );
