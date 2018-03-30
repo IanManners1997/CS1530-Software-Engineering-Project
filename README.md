@@ -1,6 +1,6 @@
 ## Pittition
 > Mobile App submitted to University of Pittsburgh Mobile app Challenge
-> Note: This following repository does not include the components directory
+<p>Note: This following repository does not include the components directory</p>
 
 
 ### Overview
