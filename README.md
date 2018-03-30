@@ -11,8 +11,7 @@ Our app aims to bridge the gap in communication between students and administrat
 ### Tech Stack
 <p>Pittition was built using the MERN Stack (MongoDB, Express, React native, Node.js) as well as Redux</p>
 
-<img src="http://niksingh.net/img/PittitionHome.png" width="425" /> <img src="http://niksingh.net/img/PittitionPage.png" width="425" />
-
-<img src="http://niksingh.net/img/PittitionLogin.png" width="425" /> <img src="http://niksingh.net/img/PittitionUpdate.png" width="425" />
+<img src="http://niksingh.net/img/PittitionLogin.png" width="425" /> <img src="http://niksingh.net/img/PittitionHome.png" width="425" /> 
+<img src="http://niksingh.net/img/PittitionPage.png" width="425" /><img src="http://niksingh.net/img/PittitionUpdate.png" width="425" />
 
 [View demo video here](https://www.youtube.com/watch?v=3CFOHVC-k0w)
