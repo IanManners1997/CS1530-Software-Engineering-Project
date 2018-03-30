@@ -1,4 +1,4 @@
-## Pittition
+# Pittition
 > Mobile App submitted to University of Pittsburgh Mobile app Challenge
 <p>Note: This following repository does not include the components directory</p>
 
