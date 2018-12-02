@@ -4,7 +4,8 @@ const bodyParser  = require('body-parser');
 const mongoose    = require('mongoose');
 const timeout     = require('connect-timeout');
 
-const app = express();
+const app         = express();
+var IP            = null;
 
 mongoose.Promise = global.Promise;
 
@@ -70,10 +71,14 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 app.use(timeout(10000));
 
+
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
   console.log('addr: '+ add);
+  IP = add
 })
+
 app.get('/', (req, res) => {
+
   console.log("Called!")
 })
 // TODO: Parameters that indicate specific limit, latest date, still open, 
@@ -174,7 +179,6 @@ app.post('/like/:pittitionId', (req, res) => {
 });
 
 app.post('/status/:pittitionId', (req, res) => {
-  console.log("IN HERE!!");
   Pittition.update(
     { _id: req.params.pittitionId },
     { $set: { 
@@ -220,7 +224,7 @@ app.use(function (req, res, next) {
   res.status(404).send("404 Page Not Found");
 });
 
-const server = app.listen(3000, '192.168.1.165', () => {
+const server = app.listen(process.env.PORT || 3000, IP, () => {
   const { address, port } = server.address();
   console.log(`Listening at http://${address}:${port}`);
 });

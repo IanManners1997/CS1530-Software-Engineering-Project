@@ -13,7 +13,7 @@ import {
 
 // Log in
 export function login(userName, password) {
-
+  console.log("IP IS " + IP + 'login/')
   return (dispatch) => {
     let request=new XMLHttpRequest();
     dispatch(loggingIn())
@@ -34,9 +34,11 @@ export function login(userName, password) {
       // console.log(request.responseText);
     })
     .then(json => {
+       console.log("goingasd to make post: " + JSON.stringify(json))
       dispatch(loginSuccess(json))
     })
     .catch(err => {
+       console.log("going tasdasdaso make post")
       dispatch(loginFailure(err))
     })
   }

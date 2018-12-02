@@ -231,6 +231,7 @@ class HomeScreen extends React.Component {
 
     const this_pt = this;
     var { user } = this.props.user;
+    console.log("USER IS " + JSON.stringify(user))
     try {
       user = JSON.parse(user);
     } catch(error) {

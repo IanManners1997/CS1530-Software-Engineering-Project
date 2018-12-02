@@ -9,6 +9,7 @@ import Modal from "react-native-modal";
 import { connect } from 'react-redux';
 
 import { login } from '../../redux/actions';
+import { IP } from '../../utils/constants';
 
 class LoginScreen extends React.Component {
   constructor() {
@@ -25,16 +26,16 @@ class LoginScreen extends React.Component {
      Keyboard.dismiss();
      
      // TODO: FOR DEVELOPMENT PURPOSES ONLY, REMOVE THIS WHEN FINISHED
-     // if(this.state.userName === '' && this.state.password === '') {
-     //     this.props.dispatch(
-     //        login("admin", "admin")
-     //  );
-     // }
-     // else {
+     if(this.state.userName === '' && this.state.password === '') {
+         this.props.dispatch(
+            login("admin", "admin")
+      );
+     }
+     else {
       this.props.dispatch(
         login(this.state.userName.toLowerCase(), this.state.password.toLowerCase())
       );
-     // }
+     }
      
   }
   renderModelContentLoading () {
@@ -58,23 +59,27 @@ class LoginScreen extends React.Component {
     )
   }
   render() {
+    console.log("IP" + IP)
     var { user, error, isFetching } = this.props.user;
     var loading = this.state.modalVisible;
     var modalContent = this.renderModelContentLoading();
 
     if(error) {
+      console.log("error")
+      console.log(error)
       modalContent = this.renderModelContentRetry();
     }
     try {
       user = JSON.parse(user);
       if(user.id !== null) {
-        modalContent = this.renderModelContentLoading();
+        modalContent = null; //this.renderModelContentLoading();
         loading = false;
         setTimeout(() => {  this.props.navigation.navigate("Home") }, 0);
       }
     }
     catch(err) {
       // loading = false;
+      console.log("error" + JSON.stringify(err))
     }
    
     return (
@@ -123,11 +128,11 @@ class LoginScreen extends React.Component {
                   <Text style={{ color: 'gray', alignSelf: 'center', fontSize: 14}}>Forgot your Password? <Text style={{ color: '#42A5F5'}}>Change it here</Text></Text>
                 </View>
             </View>
-            <Modal isVisible={loading}>
+            {/*<Modal isVisible={loading}>
               <View style={modalStyle}>
                 {modalContent}
               </View>
-            </Modal>
+            </Modal>*/}
       </View>
     );
   }
