@@ -58,6 +58,8 @@ class HomeScreen extends React.Component {
     this.handleClickOption = this.handleClickOption.bind(this);
     this.handleOpenCloseStatus = this.handleOpenCloseStatus.bind(this);
     this.handleClickStatusBar = this.handleClickStatusBar.bind(this);
+    this.handleShowReserved = this.handleShowReserved.bind(this);
+    this.handleShowAll = this.handleShowAll.bind(this);
   }
 
   componentDidMount() {
@@ -196,13 +198,33 @@ class HomeScreen extends React.Component {
 
     this.setState({ pittitions });
   }
+
+  /*
+  * HOSPITAL FUNCTIONS
+  */
+  handleShowReserved() {
+    var reserved = []
+    var resources = this.props.pittition.pittition
+    var user = this.props.user.user
+    try {
+      user = JSON.parse(user);
+    } catch(error) {
+      user = {}
+    }
+    var fullName = user.firstName + " " + user.lastName
+    for(i in resources) {
+      if(resources[i].reservedBy === fullName) reserved.push(resources[i])
+    }
+    this.setState({ pittitions: reserved })
+  }
+  handleShowAll() {
+    this.setState({ pittitions: this.props.pittition.pittition })
+  }
   render() {
     const { pittition, isFetching } = this.props.pittition;
-    console.log(pittition)
     const activePittition = pittition[this.state.activePittitionOpen];
     const this_pt = this;
     var { user } = this.props.user;
-    console.log("USER IS " + JSON.stringify(user))
     try {
       user = JSON.parse(user);
     } catch(error) {
@@ -217,8 +239,8 @@ class HomeScreen extends React.Component {
     if( !this.state.pittitionFetcher.isFetching && (this.state.pittitions === undefined || this.state.pittitions.length === 0)) {      
       return ( 
         <SideMenu menu={menu} isOpen={this.state.sidebarVisible} onChange={isOpen => this.handleSidebarToggle(isOpen)}>
-          {/* <AppBar navigation={this.props.navigation} sortByPopularity={this.sortByPopularity} sortByDate={this.sortByDate} handleOpen={this.handleOpenClose} handleSidebarToggle={this.handleSidebarToggle} /> */}
-          <Text style={styles.emptyTextStyle}>No pittitions.</Text>
+          <AppBar navigation={this.props.navigation} handleShowReserved={this.handleShowReserved} handleOpen={this.handleOpenClose} handleSidebarToggle={this.handleSidebarToggle} />
+          <Text style={styles.emptyTextStyle}>No Resources Reserved.</Text>
            <Modal visible={this.state.modalVisible} animationType={'slide'}>
              <View>
                 <CreatePittition user={user} handleCreatePittition={this.handleCreatePittition} handleClose={this.handleOpenClose} />
@@ -227,7 +249,8 @@ class HomeScreen extends React.Component {
         </SideMenu>
       )
     }
-
+    console.log("PTITTIONS STATE")
+    console.log(this.state.pittitions)
     return (
      
         <SideMenu 
@@ -236,16 +259,14 @@ class HomeScreen extends React.Component {
           onChange={isOpen => this.handleSidebarToggle(isOpen)}
         >
 
-          {/* <AppBar navigation={this.props.navigation} sortByPopularity={this.sortByPopularity} sortByDate={this.sortByDate} handleOpen={this.handleOpenClose} handleSidebarToggle={this.handleSidebarToggle} /> */}
+          <AppBar navigation={this.props.navigation} handleShowAll={this.handleShowAll} handleShowReserved={this.handleShowReserved} handleOpen={this.handleOpenClose} handleSidebarToggle={this.handleSidebarToggle} />
 
           <ScrollView style={scrollViewStyle} 
           refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
             onRefresh={this.onRefresh.bind(this)} />
-        }
-          >
-          
+          }>
             {
               this.state.pittitions.map(function(pitt, i){
 
@@ -257,6 +278,8 @@ class HomeScreen extends React.Component {
                         id={pitt.id}
                         name={pitt.name}
                         available={pitt.available}
+                        viewer={user}
+                        reservedBy={pitt.reservedBy}
                         handleClickOption={this_pt.handleClickOption} 
                         handleOpenCloseStatus={this_pt.handleOpenCloseStatus} />
                     </View>

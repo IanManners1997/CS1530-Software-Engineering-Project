@@ -27,6 +27,7 @@
     "mdi": "^2.1.19",
     "moment": "^2.21.0",
     "react": "16.0.0",
+    "react-ionicons": "^2.1.6",
     "react-native": "https://github.com/expo/react-native/archive/sdk-23.0.0.tar.gz",
     "react-native-keyboard-aware-scrollview": "^2.0.0",
     "react-native-modal": "^5.2.0",

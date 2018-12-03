@@ -58,7 +58,8 @@ var CommentSchema = new Schema({
 var resourceSchema = new Schema({
   resourceId: String,
   name: String,
-  available: Boolean
+  available: Boolean,
+  reservedBy: String
 })
 
 function appendArray(size) {
@@ -83,7 +84,8 @@ const resources = [
   {
     resourceId: "0ed0e3dc-1c74-4ac2-91db-b7b1751275f5",
     name: "Hospital Bed #123",
-    available: false
+    available: false,
+    reservedBy: 'John Doe'
   },
   {
     resourceId: "7e3cdf35-1126-4938-b31c-cacf5c8b15f2",
@@ -93,12 +95,13 @@ const resources = [
   {
     resourceId: "9b263326-cc18-4044-b86f-c5cd485e89d3",
     name: "X-Ray",
-    available: true
+    available: false,
+    reservedBy: 'Mary Jane'
   },
   {
     resourceId: "f4bc5e48-1298-4244-a948-8f48e648fa41",
     name: "CT-Scan",
-    available: true
+    available: true,
   }
 ]
 const pittitions = [
@@ -133,7 +136,7 @@ const users = [
     lastName: 'Doe',
     img_url: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50',
     type: 'student'
-  }
+  },
 
 ]
 const comments = [

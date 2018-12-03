@@ -62,7 +62,8 @@ var CommentSchema = new Schema({
 var ResourceSchema = new Schema({
   resourceId: String,
   name: String,
-  available: Boolean
+  available: Boolean,
+  reservedBy: String
 })
 
 // Compile model from schema

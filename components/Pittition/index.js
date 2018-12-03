@@ -1,15 +1,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableWithoutFeedback, StyleSheet, Platform, ScrollView, Share, Alert } from 'react-native';
-import ModalDropdown from 'react-native-modal-dropdown';
-import Moment from 'moment';
-import Modal from "react-native-modal";
 
-import { height, width } from '../../utils/getDimensions';
-import { IP } from '../../utils/constants';
-
-import EntypoIcon from 'react-native-vector-icons/Entypo';
-import FoundationIcon from 'react-native-vector-icons/Foundation';
-import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons'
 
 export default class Pittition extends React.Component {
   constructor(props) {
@@ -30,19 +21,23 @@ export default class Pittition extends React.Component {
     const C_UNSELECTED = '#BDBDBD';
     const C_SELECTED = '#64B5F6';
 
-    const { name, available } = this.props;
-    console.log("IT IS")
-    console.log(this.props)
+    const { name, available, reservedBy, viewer } = this.props;
+    
+    // Note: Better to have a id for the user instead of comparing fullnames
+    var fullName = viewer.firstName + " " + viewer.lastName
+
     return (
     	<View style={style}>
-        <View>
-          <Text style={{  }}>{ name }</Text>
+       <View style={{ flex: 0.05, backgroundColor: this.props.available ? '#2ECC40' : '#FF4136' }}>
         </View>
-        <View>
-          <Text>{ available }</Text>
+        <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
+          <Text>{ name }</Text>
         </View>
-        <View>
-          <Text>Reserve</Text>
+        <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
+        
+        </View>
+        <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
+          <Text >{ reservedBy }</Text>
         </View>
       </View>
     
@@ -54,7 +49,7 @@ export default class Pittition extends React.Component {
 const styles = {
   headerStyle: {
     flex: 0.6,
-    flexDirection: 'row',
+    flexDirection: 'column',
     padding: 10,
     alignItems: 'center',
     display: 'inline',
@@ -100,7 +95,7 @@ const styles = {
 }
 const style = {
   alignSelf: 'center',
-  flexDirection: 'column',
+  flexDirection: 'row',
   justifyContent: 'space-between',
   width: '95%',
   backgroundColor: 'white',
@@ -108,6 +103,7 @@ const style = {
   borderRadius: 5,
   padding: 0,
   marginTop: 15,
+  textAlign: 'center',
 
   shadowColor: '#000000',
   shadowOffset: {

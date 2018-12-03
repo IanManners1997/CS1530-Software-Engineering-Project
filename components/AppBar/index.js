@@ -4,7 +4,6 @@ import { View, Text, StyleSheet, Platform, ScrollView, TouchableWithoutFeedback 
 // import { Toolbar } from 'react-native-material-ui';
 // import { UITheme } from '../../utils/MuiTheme';
 import { height, width } from '../../utils/getDimensions';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import FoundationIcon from 'react-native-vector-icons/Foundation';
 
@@ -15,15 +14,20 @@ export default class AppBar extends React.Component {
       tabValue: 0,
     }
   }
-  handlePopular() {
+  handleShowAll() {
     this.setState({ tabValue: 0 });
-    this.props.sortByPopularity();
+    this.props.handleShowAll();
   }
 
   handleRecent() {
     this.setState({ tabValue: 1 });
     this.props.sortByDate();
   }
+  handleReserve() {
+    this.setState({ tabValue: 1 });
+    this.props.handleShowReserved();
+  }
+  
   render() {
     const BORDER_WIDTH_ACTIVE = 3;
     return (
@@ -44,14 +48,19 @@ export default class AppBar extends React.Component {
           </TouchableWithoutFeedback>
         </View>
         <View style={{ flexDirection: 'row' }}>
-          <TouchableWithoutFeedback onPress={() => { this.handlePopular() }}>
+          <TouchableWithoutFeedback onPress={() => { this.handleShowAll() }}>
             <View style={{ flex: 1, alignItems: 'center', paddingBottom: 15, justifyContent: 'center', borderBottomColor: 'white', borderBottomWidth: this.state.tabValue === 0 ? BORDER_WIDTH_ACTIVE : 0 }}>
-              <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold'}}>POPULAR</Text>
+              <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold'}}>All</Text>
+            </View>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => { this.handleReserve() }}>
+            <View style={{ flex: 1, alignItems: 'center', paddingBottom: 15, justifyContent: 'center', borderBottomColor: 'white', borderBottomWidth: this.state.tabValue === 1 ? BORDER_WIDTH_ACTIVE : 0}}>
+              <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold'}}>Reserved</Text>
             </View>
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={() => { this.handleRecent() }}>
-            <View style={{ flex: 1, alignItems: 'center', paddingBottom: 15, justifyContent: 'center', borderBottomColor: 'white', borderBottomWidth: this.state.tabValue === 1 ? BORDER_WIDTH_ACTIVE : 0}}>
-              <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold'}}>RECENT</Text>
+            <View style={{ flex: 1, alignItems: 'center', paddingBottom: 15, justifyContent: 'center', borderBottomColor: 'white', borderBottomWidth: this.state.tabValue === 2 ? BORDER_WIDTH_ACTIVE : 0}}>
+              <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold'}}>Cart</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
