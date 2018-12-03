@@ -59,13 +59,44 @@ var CommentSchema = new Schema({
     date: Date,
 })
 
+var ResourceSchema = new Schema({
+  resourceId: String,
+  name: String,
+  available: Boolean
+})
+
 // Compile model from schema
 var Pittition = mongoose.model('PittitionModel', PittitionSchema);
+var Resource = mongoose.model('ResourceModel', ResourceSchema);
 var User = mongoose.model('UserModel', UserSchema);
 var Comment = mongoose.model('CommentModel', CommentSchema);
 
 // TODO: Placeholder until we have access to allow students to login with their pitt info
 var cachedUsername = "jhd31";
+
+
+var os = require('os');
+var ifaces = os.networkInterfaces();
+
+Object.keys(ifaces).forEach(function (ifname) {
+  var alias = 0;
+
+  ifaces[ifname].forEach(function (iface) {
+    if ('IPv4' !== iface.family || iface.internal !== false) {
+      // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+      return;
+    }
+
+    if (alias >= 1) {
+      // this single interface has multiple ipv4 addresses
+      console.log(ifname + ':' + alias, iface.address);
+    } else {
+      // this interface has only one ipv4 adress
+      console.log(ifname, iface.address);
+    }
+    ++alias;
+  });
+});
 
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -78,8 +109,16 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
 })
 
 app.get('/', (req, res) => {
-
   console.log("Called!")
+})
+
+app.get('/Resource', (req, res) => {
+  Resource.find().exec((error, resources) => {
+    if(error) console.log(error);
+    console.log(resources)
+    res.send(resources)
+  })
+  
 })
 // TODO: Parameters that indicate specific limit, latest date, still open, 
 // TODO: Refactor this
@@ -130,6 +169,7 @@ app.get('/Pittition', (req, res) => {
 
 // All of the pittition schema/model information should be in the post body
 app.post('/Pittition', (req, res) => {
+  console.log("HERE")
   var pt = new Pittition({
     title: req.body.title,
     description: req.body.description,
@@ -204,17 +244,19 @@ app.put('/follow/:pittitionId', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  console.log("HERE");
+  console.log("HEjljkzhcvkjhxcvkjhjxckxRE");
   // TODO find how to use similar to where once I have access to internet
   User.find().limit(10).sort({ date: -1 }).exec( (error, users) => {
     var user =  "error"
-
+    console.log("PRINTING USERS")
+    console.log(users)
     for(i in users) {
       if(verify(users[i].userName, req.body.userName) && verify(users[i].password, req.body.password)) {
         user = users[i];
         break;
       }
     }
+    console.log("USER IS " + JSON.stringify(user))
     res.send(user)
   });
 });
@@ -224,8 +266,10 @@ app.use(function (req, res, next) {
   res.status(404).send("404 Page Not Found");
 });
 
-const server = app.listen(process.env.PORT || 3000, IP, () => {
+const server = app.listen(process.env.PORT || 3000, "192.168.0.10", () => {
   const { address, port } = server.address();
+  console.log(server.address().address)
+  console.log(IP)
   console.log(`Listening at http://${address}:${port}`);
 });
 

@@ -59,8 +59,9 @@ class LoginScreen extends React.Component {
     )
   }
   render() {
-    console.log("IP" + IP)
+    console.log("IP " + IP)
     var { user, error, isFetching } = this.props.user;
+    console.log(user)
     var loading = this.state.modalVisible;
     var modalContent = this.renderModelContentLoading();
 
@@ -86,9 +87,9 @@ class LoginScreen extends React.Component {
      <View style={{ height: '100%', marginTop: 0}}>
         <View style={{ flexDirection: 'column', backgroundColor: '#42A5F5', flex: 0.4, height: '100%', alignItems: 'flex-start', padding: 25  }}>
           <View style={{ flexDirection: 'row', flex: 1, alignSelf: 'flex-start', marginTop: 20  }}>
-            <View style={{ alignSelf: 'center', marginTop: 10  }}><Text style={{ color: 'white', fontSize: 28, fontWeight: '300' }}><Text style={{ fontWeight: '800'}}>Pitt</Text>ition</Text></View>
+            <View style={{ alignSelf: 'center', marginTop: 10  }}><Text style={{ color: 'white', fontSize: 28, fontWeight: '300' }}>HospitalIQ</Text></View>
           </View>
-            <Text style={{ color: 'white', fontSize: 22, fontWeight: '700', alignSelf: 'center', marginTop: 10  }}>University of Pittsburgh</Text>
+            <Text style={{ color: 'white', fontSize: 22, fontWeight: '700', alignSelf: 'center', marginTop: 10  }}>Hospital Name</Text>
         </View>
       
         <View style={{ flexDirection: 'column', flex: 0.1, height: '100%', marginTop: 60  }}>

@@ -27,8 +27,15 @@ export function login(userName, password) {
 
       request.onreadystatechange = () => {
         if (request.readyState === 4) {
-           if(request.responseText === 'error') reject("Username or Password not correct");
-           else                                 resolve(request.responseText);
+           if(request.responseText === 'error') {
+             console.log("REQUEST")
+             console.log("RESPONSE TEEXT " + request.responseText)
+            reject("Username or Password not correct");
+           } 
+           else {
+            console.log(request.responseText)
+            resolve(request.responseText);
+           } 
         }
       };
       // console.log(request.responseText);
@@ -86,9 +93,10 @@ export function getActivePittitionSuccess(data) {
 export function fetchPittitionFromAPI() {
   return (dispatch) => {
     dispatch(getPittition())
-    fetch(IP + 'Pittition')
+    fetch(IP + 'Resource')
     .then(data => data.json())
     .then(json => {
+      console.log("SUCCESS " + JSON.stringify(json))
       dispatch(getPittitionSuccess(json))
     })
     .catch(err => dispatch(getPittitionFailure(err)))

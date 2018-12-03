@@ -27,4 +27,5 @@ export const FOLLOWING_PITTITION = 'FOLLOWING_PITTITION'
 export const FOLLOWING_PITTITION_SUCCESS = 'FOLLOWING_PITTITION_SUCCESS'
 export const FOLLOWING_PITTITION_FAILURE = 'FOLLOWING_PITTITION_FAILURE'
 
-export const IP = 'https://pittition.herokuapp.com/'
+// export const IP = 'https://pittition.herokuapp.com/'
+export const IP = 'http://192.168.0.10:3000/'
