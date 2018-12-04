@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 import CustomModal from 'react-native-modal'
 import { fetchPittitionFromAPI, getActivePittition, updatePittitionStatusAPI, deletePittitionFromAPI, followPittitionAPI } from '../../redux/actions';
-
+import { SearchBar } from 'react-native-elements'
 import SideMenu from 'react-native-side-menu';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import Sidebar from 'react-native-sidebar';
@@ -45,12 +45,14 @@ class HomeScreen extends React.Component {
       modalVisible: false,
       sidebarVisible: false,
       pittitions: props.pittition.pittition,
+      allPittitions: props.pittition.pittition,
       pittitionFetcher: props.pittition,
       statusModalVisible: false,
       activePittitionOpen: 0,
       activePittitionStatus: 0,
       statusUpdateMessage: '',
       refreshing: false,
+      tabOpen: 'all',
     }
     this.handleOpenClose = this.handleOpenClose.bind(this);
     this.handleSidebarToggle = this.handleSidebarToggle.bind(this);
@@ -60,6 +62,7 @@ class HomeScreen extends React.Component {
     this.handleClickStatusBar = this.handleClickStatusBar.bind(this);
     this.handleShowReserved = this.handleShowReserved.bind(this);
     this.handleShowAll = this.handleShowAll.bind(this);
+    this.handleFilterResources = this.handleFilterResources.bind(this);
   }
 
   componentDidMount() {
@@ -215,10 +218,20 @@ class HomeScreen extends React.Component {
     for(i in resources) {
       if(resources[i].reservedBy === fullName) reserved.push(resources[i])
     }
-    this.setState({ pittitions: reserved })
+    this.setState({ pittitions: reserved, reservedPittitions: reserved, tabOpen: 'reserved' })
   }
   handleShowAll() {
-    this.setState({ pittitions: this.props.pittition.pittition })
+    this.setState({ pittitions: this.props.pittition.pittition, allPittitions: this.props.pittition.pittition, tabOpen: 'all' })
+  }
+  handleFilterResources(inputText) {
+    var pittitions = []
+    if(this.state.tabOpen === 'reserved') pittitions = this.state.reservedPittitions
+    else if(this.state.tabOpen === 'cart') pittitions = this.state.cartPittitions
+    else pittitions = this.state.allPittitions
+    var filteredResources = pittitions.filter(function(resource) {
+      return resource.name.toLowerCase().includes(inputText.toLowerCase());
+    });
+    this.setState({ pittitions: filteredResources })
   }
   render() {
     const { pittition, isFetching } = this.props.pittition;
@@ -239,7 +252,15 @@ class HomeScreen extends React.Component {
     if( !this.state.pittitionFetcher.isFetching && (this.state.pittitions === undefined || this.state.pittitions.length === 0)) {      
       return ( 
         <SideMenu menu={menu} isOpen={this.state.sidebarVisible} onChange={isOpen => this.handleSidebarToggle(isOpen)}>
-          <AppBar navigation={this.props.navigation} handleShowReserved={this.handleShowReserved} handleOpen={this.handleOpenClose} handleSidebarToggle={this.handleSidebarToggle} />
+          <AppBar navigation={this.props.navigation} handleShowAll={this.handleShowAll} handleShowReserved={this.handleShowReserved} handleOpen={this.handleOpenClose} handleSidebarToggle={this.handleSidebarToggle} />
+          <SearchBar
+            lightTheme
+            onChangeText={this.handleFilterResources}
+            placeholder='Search Resources'
+            containerStyle={styles.searchContainerStyle} 
+            inputStyle={styles.searchInputStyle}
+            placeholderTextColor='white'
+            searchIcon={{ color: 'white', size: 54 }} />
           <Text style={styles.emptyTextStyle}>No Resources Reserved.</Text>
            <Modal visible={this.state.modalVisible} animationType={'slide'}>
              <View>
@@ -260,6 +281,14 @@ class HomeScreen extends React.Component {
         >
 
           <AppBar navigation={this.props.navigation} handleShowAll={this.handleShowAll} handleShowReserved={this.handleShowReserved} handleOpen={this.handleOpenClose} handleSidebarToggle={this.handleSidebarToggle} />
+          <SearchBar
+            lightTheme
+            onChangeText={this.handleFilterResources}
+            placeholder='Search Resources'
+            containerStyle={styles.searchContainerStyle} 
+            inputStyle={styles.searchInputStyle}
+            placeholderTextColor='white'
+            searchIcon={{ color: 'white', size: 54 }} />
 
           <ScrollView style={scrollViewStyle} 
           refreshControl={
@@ -344,6 +373,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#42A5F5',
     alignItems: 'center',
   },
+  searchContainerStyle: {
+    // shadowColor: '#000000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 3
+    // },
+    // shadowRadius: 5,
+    // shadowOpacity: 0.2,
+    backgroundColor: '#2196F3',
+    borderBottomColor: 'transparent',
+    borderTopColor: 'transparent'
+  },
+  searchInputStyle: {
+    backgroundColor: '#0b7dda',
+    color: 'white'
+  }
 });
 
 const scrollViewStyle = {

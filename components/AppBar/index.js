@@ -14,7 +14,7 @@ export default class AppBar extends React.Component {
       tabValue: 0,
     }
   }
-  handleShowAll() {
+  handleAll() {
     this.setState({ tabValue: 0 });
     this.props.handleShowAll();
   }
@@ -48,7 +48,7 @@ export default class AppBar extends React.Component {
           </TouchableWithoutFeedback>
         </View>
         <View style={{ flexDirection: 'row' }}>
-          <TouchableWithoutFeedback onPress={() => { this.handleShowAll() }}>
+          <TouchableWithoutFeedback onPress={() => { this.handleAll() }}>
             <View style={{ flex: 1, alignItems: 'center', paddingBottom: 15, justifyContent: 'center', borderBottomColor: 'white', borderBottomWidth: this.state.tabValue === 0 ? BORDER_WIDTH_ACTIVE : 0 }}>
               <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold'}}>All</Text>
             </View>
@@ -76,13 +76,13 @@ const wrapperStyle = {
   // flex: 0.2,  
   height: height/6,
   backgroundColor: '#2196F3',
-  shadowColor: '#000000',
-  shadowOffset: {
-    width: 0,
-    height: 3
-  },
-  shadowRadius: 5,
-  shadowOpacity: 0.2
+  // shadowColor: '#000000',
+  // shadowOffset: {
+  //   width: 0,
+  //   height: 3
+  // },
+  // shadowRadius: 5,
+  // shadowOpacity: 0.2
 }
 const style = {
   flex: 1,

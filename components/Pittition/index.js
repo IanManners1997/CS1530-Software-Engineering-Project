@@ -103,7 +103,6 @@ const style = {
   borderRadius: 5,
   padding: 0,
   marginTop: 15,
-  textAlign: 'center',
 
   shadowColor: '#000000',
   shadowOffset: {
