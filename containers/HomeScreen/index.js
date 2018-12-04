@@ -53,6 +53,7 @@ class HomeScreen extends React.Component {
       statusUpdateMessage: '',
       refreshing: false,
       tabOpen: 'all',
+      cartPittitions: [],
     }
     this.handleOpenClose = this.handleOpenClose.bind(this);
     this.handleSidebarToggle = this.handleSidebarToggle.bind(this);
@@ -62,7 +63,9 @@ class HomeScreen extends React.Component {
     this.handleClickStatusBar = this.handleClickStatusBar.bind(this);
     this.handleShowReserved = this.handleShowReserved.bind(this);
     this.handleShowAll = this.handleShowAll.bind(this);
+    this.handleShowCart = this.handleShowCart.bind(this);
     this.handleFilterResources = this.handleFilterResources.bind(this);
+    this.handleAddCart = this.handleAddCart.bind(this);
   }
 
   componentDidMount() {
@@ -223,6 +226,10 @@ class HomeScreen extends React.Component {
   handleShowAll() {
     this.setState({ pittitions: this.props.pittition.pittition, allPittitions: this.props.pittition.pittition, tabOpen: 'all' })
   }
+  handleShowCart() {
+    console.log("IN SHOW CART")
+    this.setState({ pittitions: this.state.cartPittitions, cartPittitions: this.state.cartPittitions, tabOpen: 'cart' })
+  }
   handleFilterResources(inputText) {
     var pittitions = []
     if(this.state.tabOpen === 'reserved') pittitions = this.state.reservedPittitions
@@ -233,9 +240,14 @@ class HomeScreen extends React.Component {
     });
     this.setState({ pittitions: filteredResources })
   }
+  handleAddCart(index) {
+    var cart = this.state.cartPittitions
+    cart.push(this.state.pittitions[index])
+    console.log("CART IS " + JSON.stringify(cart))
+    this.setState({ cartPittitions: cart })
+  }
   render() {
     const { pittition, isFetching } = this.props.pittition;
-    const activePittition = pittition[this.state.activePittitionOpen];
     const this_pt = this;
     var { user } = this.props.user;
     try {
@@ -252,7 +264,7 @@ class HomeScreen extends React.Component {
     if( !this.state.pittitionFetcher.isFetching && (this.state.pittitions === undefined || this.state.pittitions.length === 0)) {      
       return ( 
         <SideMenu menu={menu} isOpen={this.state.sidebarVisible} onChange={isOpen => this.handleSidebarToggle(isOpen)}>
-          <AppBar navigation={this.props.navigation} handleShowAll={this.handleShowAll} handleShowReserved={this.handleShowReserved} handleOpen={this.handleOpenClose} handleSidebarToggle={this.handleSidebarToggle} />
+          <AppBar navigation={this.props.navigation} handleShowAll={this.handleShowAll} handleShowReserved={this.handleShowReserved} handleShowCart={this.handleShowCart} handleOpen={this.handleOpenClose} handleSidebarToggle={this.handleSidebarToggle} />
           <SearchBar
             lightTheme
             onChangeText={this.handleFilterResources}
@@ -280,7 +292,7 @@ class HomeScreen extends React.Component {
           onChange={isOpen => this.handleSidebarToggle(isOpen)}
         >
 
-          <AppBar navigation={this.props.navigation} handleShowAll={this.handleShowAll} handleShowReserved={this.handleShowReserved} handleOpen={this.handleOpenClose} handleSidebarToggle={this.handleSidebarToggle} />
+          <AppBar navigation={this.props.navigation} handleShowAll={this.handleShowAll} handleShowReserved={this.handleShowReserved} handleShowCart={this.handleShowCart} />
           <SearchBar
             lightTheme
             onChangeText={this.handleFilterResources}
@@ -300,7 +312,7 @@ class HomeScreen extends React.Component {
               this.state.pittitions.map(function(pitt, i){
 
                 return (
-                  <TouchableWithoutFeedback key={i} onPress={() => { this_pt.handleViewPittition(this_pt.props, i) }}>
+                  <TouchableWithoutFeedback key={i}>
                     <View>
                       <Pittition
                         num={i}
@@ -310,7 +322,8 @@ class HomeScreen extends React.Component {
                         viewer={user}
                         reservedBy={pitt.reservedBy}
                         handleClickOption={this_pt.handleClickOption} 
-                        handleOpenCloseStatus={this_pt.handleOpenCloseStatus} />
+                        handleOpenCloseStatus={this_pt.handleOpenCloseStatus} 
+                        handleAddCart={this_pt.handleAddCart} />
                     </View>
                   </TouchableWithoutFeedback>
                 )

@@ -16,12 +16,11 @@ export default class Pittition extends React.Component {
   }
 
 
-
   render() {
     const C_UNSELECTED = '#BDBDBD';
     const C_SELECTED = '#64B5F6';
 
-    const { name, available, reservedBy, viewer } = this.props;
+    const { name, available, reservedBy, viewer, num } = this.props;
     
     // Note: Better to have a id for the user instead of comparing fullnames
     var fullName = viewer.firstName + " " + viewer.lastName
@@ -34,11 +33,15 @@ export default class Pittition extends React.Component {
           <Text>{ name }</Text>
         </View>
         <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
-        
         </View>
         <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
           <Text >{ reservedBy }</Text>
         </View>
+        <TouchableWithoutFeedback onPress={() => { this.props.handleAddCart(num) }} style={{ backgroundColor: 'red' }}>
+          <View>
+            <Text>Reserve</Text>
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     
     );

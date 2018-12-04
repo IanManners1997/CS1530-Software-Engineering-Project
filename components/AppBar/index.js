@@ -19,13 +19,14 @@ export default class AppBar extends React.Component {
     this.props.handleShowAll();
   }
 
-  handleRecent() {
-    this.setState({ tabValue: 1 });
-    this.props.sortByDate();
-  }
   handleReserve() {
     this.setState({ tabValue: 1 });
     this.props.handleShowReserved();
+  }
+
+  handleCart() {
+    this.setState({ tabValue: 2 });
+    this.props.handleShowCart();
   }
   
   render() {
@@ -58,7 +59,7 @@ export default class AppBar extends React.Component {
               <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold'}}>Reserved</Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={() => { this.handleRecent() }}>
+          <TouchableWithoutFeedback onPress={() => { this.handleCart() }}>
             <View style={{ flex: 1, alignItems: 'center', paddingBottom: 15, justifyContent: 'center', borderBottomColor: 'white', borderBottomWidth: this.state.tabValue === 2 ? BORDER_WIDTH_ACTIVE : 0}}>
               <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold'}}>Cart</Text>
             </View>
