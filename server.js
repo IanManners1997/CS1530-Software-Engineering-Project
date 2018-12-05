@@ -63,7 +63,8 @@ var ResourceSchema = new Schema({
   resourceId: String,
   name: String,
   available: Boolean,
-  reservedBy: String
+  reservedBy: String,
+  note: String
 })
 
 // Compile model from schema

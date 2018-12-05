@@ -59,7 +59,8 @@ var resourceSchema = new Schema({
   resourceId: String,
   name: String,
   available: Boolean,
-  reservedBy: String
+  reservedBy: String,
+  note: String
 })
 
 function appendArray(size) {
@@ -85,23 +86,27 @@ const resources = [
     resourceId: "0ed0e3dc-1c74-4ac2-91db-b7b1751275f5",
     name: "Hospital Bed #123",
     available: false,
-    reservedBy: 'John Doe'
+    reservedBy: 'John Doe',
+    note: "Some Note blah blah blah"
   },
   {
     resourceId: "7e3cdf35-1126-4938-b31c-cacf5c8b15f2",
     name: "Hospital Bed #312",
-    available: true
+    available: true,
+    note: "Some Note blah blah blah"
   },
   {
     resourceId: "9b263326-cc18-4044-b86f-c5cd485e89d3",
     name: "X-Ray",
     available: false,
-    reservedBy: 'Mary Jane'
+    reservedBy: 'Mary Jane',
+    note: "Some Note blah blah blah"
   },
   {
     resourceId: "f4bc5e48-1298-4244-a948-8f48e648fa41",
     name: "CT-Scan",
     available: true,
+    note: "Some Note blah blah blah"
   }
 ]
 const pittitions = [

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableWithoutFeedback, StyleSheet, Platform, ScrollView, Share, Alert } from 'react-native';
-
+import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 export default class Pittition extends React.Component {
   constructor(props) {
@@ -20,26 +20,40 @@ export default class Pittition extends React.Component {
     const C_UNSELECTED = '#BDBDBD';
     const C_SELECTED = '#64B5F6';
 
-    const { name, available, reservedBy, viewer, num } = this.props;
+    const { name, available, reservedBy, note, viewer, num } = this.props;
     
     // Note: Better to have a id for the user instead of comparing fullnames
-    var fullName = viewer.firstName + " " + viewer.lastName
+    var fullName = reservedBy
 
     return (
     	<View style={style}>
        <View style={{ flex: 0.05, backgroundColor: this.props.available ? '#2ECC40' : '#FF4136' }}>
         </View>
-        <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
-          <Text>{ name }</Text>
+        <View style={{ flex: 0.5, alignItems: 'flex-start', justifyContent: 'flex-start', flexDirection: 'column', paddingTop: 15 }}>
+          <View >
+            <Text style={{ fontSize: 15, color: 'gray' }}>RESOURCE</Text>
+          </View>
+          <View >
+            <Text style={{ fontSize: 16 }}>{ name }</Text>
+          </View>
+          <View style={{ width: 300, marginTop: 15 }}>
+            <Text style={{ fontSize: 14, fontStyle: 'italic', color: 'gray'}}>{note}</Text>
+          </View>
         </View>
-        <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
+        
+        {/* <View style={{ flex: 0.1, alignItems: 'center', justifyContent: 'center' }}>
+        </View> */}
+        <View style={{ flex: 0.4, alignItems: 'flex-start', justifyContent: 'flex-start', flexDirection: 'column', paddingTop: 15 }}>
+          <View >
+            <Text style={{ fontSize: 15, color: 'gray' }}>RESERVED BY</Text>
+          </View>
+          <View >
+            <Text style={{ fontSize: 16 }}>{ fullName }</Text>
+          </View>
         </View>
-        <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
-          <Text >{ reservedBy }</Text>
-        </View>
-        <TouchableWithoutFeedback onPress={() => { this.props.handleAddCart(num) }} style={{ backgroundColor: 'red' }}>
+        <TouchableWithoutFeedback onPress={() => { this.props.handleAddCart(num) }} style={{ backgroundColor: 'red' }} disabled={!available}>
           <View>
-            <Text>Reserve</Text>
+            <EntypoIcon name="plus" size={35} color={available ? '#2196F3' : 'white'} />
           </View>
         </TouchableWithoutFeedback>
       </View>
@@ -52,7 +66,7 @@ export default class Pittition extends React.Component {
 const styles = {
   headerStyle: {
     flex: 0.6,
-    flexDirection: 'column',
+    flexDirection: 'row',
     padding: 10,
     alignItems: 'center',
     display: 'inline',

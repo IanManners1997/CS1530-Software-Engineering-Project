@@ -367,6 +367,7 @@ class HomeScreen extends React.Component {
                         available={pitt.available}
                         viewer={user}
                         reservedBy={pitt.reservedBy}
+                        note={pitt.note}
                         handleClickOption={this_pt.handleClickOption} 
                         handleOpenCloseStatus={this_pt.handleOpenCloseStatus} 
                         handleAddCart={this_pt.handleAddCart} />
