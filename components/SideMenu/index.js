@@ -42,13 +42,13 @@ class SideMenu extends React.Component {
             <View>
               <Text style={{ fontSize: 18, textAlign: 'center' }}>{firstName} {lastName}</Text>
             </View>
-            <View>
+            {/* <View>
               <Text style={{ fontSize: 16 }}>{userName}</Text>
-            </View>
+            </View> */}
           </View>
         </View>
 
-        <TouchableWithoutFeedback onPress={() => {navigate('Home')}}>
+        {/* <TouchableWithoutFeedback onPress={() => {navigate('Home')}}>
            <View style={{ flexDirection: 'row', flex: 0.1, backgroundColor: '#F7F8FC', alignItems: 'center' }}>
             <View style={{ flexDirection: 'column', flex: 1, alignItems: 'center' }}>
              <Text style={menuTextStyle, activeStyle}>Home</Text>
@@ -62,7 +62,7 @@ class SideMenu extends React.Component {
               <Text style={menuTextStyle}>Profile</Text>
             </View>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback> */}
         
         <TouchableWithoutFeedback onPress={() => {this.handleLogout()}}>
           <View style={{ flexDirection: 'row', flex: 0.1,  alignItems: 'center' }}>

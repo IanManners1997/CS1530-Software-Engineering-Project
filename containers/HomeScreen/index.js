@@ -310,7 +310,7 @@ class HomeScreen extends React.Component {
     if( !this.state.pittitionFetcher.isFetching && (this.state.pittitions === undefined || this.state.pittitions.length === 0)) {      
       return ( 
         <SideMenu menu={menu} isOpen={this.state.sidebarVisible} onChange={isOpen => this.handleSidebarToggle(isOpen)}>
-          <AppBar navigation={this.props.navigation} handleShowAll={this.handleShowAll} handleShowReserved={this.handleShowReserved} handleShowCart={this.handleShowCart} handleOpen={this.handleOpenClose} handleSidebarToggle={this.handleSidebarToggle} />
+          <AppBar navigation={this.props.navigation} handleShowAll={this.handleShowAll} handleShowReserved={this.handleShowReserved} handleShowCart={this.handleShowCart} handleOpen={this.handleOpenClose} handleSidebarToggle={this.handleSidebarToggle} cartCount={this.state.cartPittitions.length}/>
           <SearchBar
             lightTheme
             onChangeText={this.handleFilterResources}
@@ -338,7 +338,7 @@ class HomeScreen extends React.Component {
           onChange={isOpen => this.handleSidebarToggle(isOpen)}
         >
 
-          <AppBar navigation={this.props.navigation} handleShowAll={this.handleShowAll} handleShowReserved={this.handleShowReserved} handleShowCart={this.handleShowCart} handleSidebarToggle={this.handleSidebarToggle} />
+          <AppBar navigation={this.props.navigation} handleShowAll={this.handleShowAll} handleShowReserved={this.handleShowReserved} handleShowCart={this.handleShowCart} handleSidebarToggle={this.handleSidebarToggle} cartCount={this.state.cartPittitions.length}/>
           <SearchBar
             lightTheme
             onChangeText={this.handleFilterResources}

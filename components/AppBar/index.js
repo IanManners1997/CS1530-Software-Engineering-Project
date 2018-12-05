@@ -61,7 +61,7 @@ export default class AppBar extends React.Component {
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback onPress={() => { this.handleCart() }}>
             <View style={{ flex: 1, alignItems: 'center', paddingBottom: 15, justifyContent: 'center', borderBottomColor: 'white', borderBottomWidth: this.state.tabValue === 2 ? BORDER_WIDTH_ACTIVE : 0}}>
-              <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold'}}>Cart</Text>
+              <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold'}}>Cart ({this.props.cartCount})</Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
