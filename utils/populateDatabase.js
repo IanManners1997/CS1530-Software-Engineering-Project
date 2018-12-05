@@ -87,26 +87,26 @@ const resources = [
     name: "Hospital Bed #123",
     available: false,
     reservedBy: 'John Doe',
-    note: "Some Note blah blah blah"
+    note: "Patient may require bed for an additional day due to new complications."
   },
   {
     resourceId: "7e3cdf35-1126-4938-b31c-cacf5c8b15f2",
     name: "Hospital Bed #312",
     available: true,
-    note: "Some Note blah blah blah"
+    note: "No Notes"
   },
   {
     resourceId: "9b263326-cc18-4044-b86f-c5cd485e89d3",
     name: "X-Ray",
     available: false,
     reservedBy: 'Mary Jane',
-    note: "Some Note blah blah blah"
+    note: "X-Ray will need a maintainance check and will not be available after current use."
   },
   {
     resourceId: "f4bc5e48-1298-4244-a948-8f48e648fa41",
     name: "CT-Scan",
     available: true,
-    note: "Some Note blah blah blah"
+    note: "Currently working properly."
   }
 ]
 const pittitions = [
@@ -135,8 +135,8 @@ const users = [
     type: 'student'
   },
   {
-    userName: 'admin',
-    password: 'admin',
+    userName: 'john',
+    password: 'doe',
     firstName: 'John',
     lastName: 'Doe',
     img_url: 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50',
