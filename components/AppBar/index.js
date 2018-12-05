@@ -42,8 +42,8 @@ export default class AppBar extends React.Component {
           <View style={{ flex: 1, alignItems: 'center'}}>
             <FoundationIcon name="home" size={30} color='white' />
           </View>
-          <TouchableWithoutFeedback onPress={() => { this.props.handleOpen() }}>
-            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+          <TouchableWithoutFeedback>
+            <View style={{ flex: 1, alignItems: 'flex-end', opacity: 0 }}>
               <EntypoIcon name="plus" size={30} color='white' style={{ marginRight: 15 }} />
             </View>
           </TouchableWithoutFeedback>

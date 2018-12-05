@@ -54,6 +54,7 @@ class HomeScreen extends React.Component {
       refreshing: false,
       tabOpen: 'all',
       cartPittitions: [],
+      reservedPittitions: this.getReserved(props.pittition.pittition, props.user.user)
     }
     this.handleOpenClose = this.handleOpenClose.bind(this);
     this.handleSidebarToggle = this.handleSidebarToggle.bind(this);
@@ -78,6 +79,7 @@ class HomeScreen extends React.Component {
     this.setState({
       pittitionFetcher: nextProps.pittition,
       pittitions: nextProps.pittition.pittition,
+      reservedPittitions: this.getReserved(nextProps.pittition.pittition, nextProps.user.user),
       activePittitionStatus: pittitionStatuses.findIndex(function(status) {
         if(nextProps.pittition.pittition.length === 0) return false;
         else
@@ -158,8 +160,6 @@ class HomeScreen extends React.Component {
     props.navigation.navigate("PittitionScreen");
   }
 
-
-
   handleClickStatusBar(activePittitionStatus) {
     this.setState({ activePittitionStatus })
   }
@@ -204,14 +204,10 @@ class HomeScreen extends React.Component {
 
     this.setState({ pittitions });
   }
-
-  /*
-  * HOSPITAL FUNCTIONS
-  */
-  handleShowReserved() {
+  getReserved(pittitions, user) {
     var reserved = []
-    var resources = this.props.pittition.pittition
-    var user = this.props.user.user
+    var resources = pittitions
+    console.log(resources)
     try {
       user = JSON.parse(user);
     } catch(error) {
@@ -221,13 +217,31 @@ class HomeScreen extends React.Component {
     for(i in resources) {
       if(resources[i].reservedBy === fullName) reserved.push(resources[i])
     }
+    return reserved
+  }
+  /*
+  * HOSPITAL FUNCTIONS
+  */
+  handleShowReserved() {
+    // var reserved = []
+    // var resources = this.props.pittition.pittition
+    // var user = this.props.user.user
+    // try {
+    //   user = JSON.parse(user);
+    // } catch(error) {
+    //   user = {}
+    // }
+    // var fullName = user.firstName + " " + user.lastName
+    // for(i in resources) {
+    //   if(resources[i].reservedBy === fullName) reserved.push(resources[i])
+    // }
+    var reserved = this.state.reservedPittitions
     this.setState({ pittitions: reserved, reservedPittitions: reserved, tabOpen: 'reserved' })
   }
   handleShowAll() {
     this.setState({ pittitions: this.props.pittition.pittition, allPittitions: this.props.pittition.pittition, tabOpen: 'all' })
   }
   handleShowCart() {
-    console.log("IN SHOW CART")
     this.setState({ pittitions: this.state.cartPittitions, cartPittitions: this.state.cartPittitions, tabOpen: 'cart' })
   }
   handleFilterResources(inputText) {
@@ -245,6 +259,25 @@ class HomeScreen extends React.Component {
     cart.push(this.state.pittitions[index])
     console.log("CART IS " + JSON.stringify(cart))
     this.setState({ cartPittitions: cart })
+  }
+  handleCheckOut() {
+    console.log("checkout")
+    var reservedPittitions = this.state.reservedPittitions
+    var cart = this.state.cartPittitions
+    var user = this.props.user.user
+    try {
+      user = JSON.parse(user);
+    } catch(error) {
+      user = {}
+    }
+    console.log(this.props.user)
+    // Set each cart item to unavailable
+    for(i in cart) {
+      cart[i].available = false
+      cart[i].reservedBy = user.firstName + " " + user.lastName
+    }
+    newReserved = reservedPittitions.concat(cart)
+    this.setState({ reservedPittitions: newReserved, cartPittitions: [], pittitions: [] })
   }
   render() {
     const { pittition, isFetching } = this.props.pittition;
@@ -273,7 +306,7 @@ class HomeScreen extends React.Component {
             inputStyle={styles.searchInputStyle}
             placeholderTextColor='white'
             searchIcon={{ color: 'white', size: 54 }} />
-          <Text style={styles.emptyTextStyle}>No Resources Reserved.</Text>
+          <Text style={styles.emptyTextStyle}>No Resources.</Text>
            <Modal visible={this.state.modalVisible} animationType={'slide'}>
              <View>
                 <CreatePittition user={user} handleCreatePittition={this.handleCreatePittition} handleClose={this.handleOpenClose} />
@@ -282,8 +315,7 @@ class HomeScreen extends React.Component {
         </SideMenu>
       )
     }
-    console.log("PTITTIONS STATE")
-    console.log(this.state.pittitions)
+
     return (
      
         <SideMenu 
@@ -292,7 +324,7 @@ class HomeScreen extends React.Component {
           onChange={isOpen => this.handleSidebarToggle(isOpen)}
         >
 
-          <AppBar navigation={this.props.navigation} handleShowAll={this.handleShowAll} handleShowReserved={this.handleShowReserved} handleShowCart={this.handleShowCart} />
+          <AppBar navigation={this.props.navigation} handleShowAll={this.handleShowAll} handleShowReserved={this.handleShowReserved} handleShowCart={this.handleShowCart} handleSidebarToggle={this.handleSidebarToggle} />
           <SearchBar
             lightTheme
             onChangeText={this.handleFilterResources}
@@ -331,7 +363,11 @@ class HomeScreen extends React.Component {
             }
            
           </ScrollView>
-
+          <TouchableWithoutFeedback onPress={() => { this.handleCheckOut() }}  style={{ width: 200, height: 50, backgroundColor: this.state.cartPittitions.length > 0 ? '#2ECC40' : '#d9d9d9' }}>
+            <View>
+              <Text>Reserve</Text>
+            </View>
+          </TouchableWithoutFeedback>
          
         </SideMenu>
      
