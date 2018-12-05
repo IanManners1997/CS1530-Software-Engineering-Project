@@ -283,8 +283,8 @@ class HomeScreen extends React.Component {
   renderCheckOut() {
     var cartNotEmpty = this.state.pittitions.length > 0
     return ( 
-      <TouchableWithoutFeedback onPress={() => { this.handleCheckOut() }}>
-        <View style={{ width: '100%', height: 50, backgroundColor: cartNotEmpty ? '#2ECC40' : '#d9d9d9', alignItems: 'center', justifyContent: 'center'}}>
+      <TouchableWithoutFeedback onPress={() => { this.handleCheckOut() }} disabled={!cartNotEmpty}>
+        <View style={{ width: '100%', height: 50, backgroundColor: cartNotEmpty ? '#2ECC40' : '#d9d9d9', alignItems: 'center', justifyContent: 'center', opacity: cartNotEmpty ? 1 : 0}}>
           <Text style={{ color: cartNotEmpty ? 'white': 'gray' }}>CHECK OUT</Text>
         </View>
       </TouchableWithoutFeedback>
