@@ -279,10 +279,23 @@ class HomeScreen extends React.Component {
     newReserved = reservedPittitions.concat(cart)
     this.setState({ reservedPittitions: newReserved, cartPittitions: [], pittitions: [] })
   }
+
+  renderCheckOut() {
+    var cartNotEmpty = this.state.pittitions.length > 0
+    return ( 
+      <TouchableWithoutFeedback onPress={() => { this.handleCheckOut() }}>
+        <View style={{ width: '100%', height: 50, backgroundColor: cartNotEmpty ? '#2ECC40' : '#d9d9d9', alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{ color: cartNotEmpty ? 'white': 'gray' }}>CHECK OUT</Text>
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  }
   render() {
     const { pittition, isFetching } = this.props.pittition;
     const this_pt = this;
     var { user } = this.props.user;
+    console.log("IT IS " + this.state.tabOpen)
+    const checkOutBar = this.state.tabOpen === 'cart' ? this.renderCheckOut() : null
     try {
       user = JSON.parse(user);
     } catch(error) {
@@ -312,6 +325,7 @@ class HomeScreen extends React.Component {
                 <CreatePittition user={user} handleCreatePittition={this.handleCreatePittition} handleClose={this.handleOpenClose} />
              </View>
           </Modal>
+          {checkOutBar}
         </SideMenu>
       )
     }
@@ -363,11 +377,7 @@ class HomeScreen extends React.Component {
             }
            
           </ScrollView>
-          <TouchableWithoutFeedback onPress={() => { this.handleCheckOut() }}  style={{ width: 200, height: 50, backgroundColor: this.state.cartPittitions.length > 0 ? '#2ECC40' : '#d9d9d9' }}>
-            <View>
-              <Text>Reserve</Text>
-            </View>
-          </TouchableWithoutFeedback>
+          {checkOutBar}
          
         </SideMenu>
      
