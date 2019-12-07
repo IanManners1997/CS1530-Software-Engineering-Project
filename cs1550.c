@@ -441,14 +441,14 @@ static int cs1550_mknod(const char *path, mode_t mode, dev_t dev)
 				return -EPERM;
 			}
 
-			if(file_ext && file_ext[0]){
-				if(strlen(file_name) > MAX_FILENAME || strlen(file_ext) > MAX_EXTENSION){
-					return -ENAMETOOLONG;
-				}
-			}else{
-					if(strlen(file_name) > MAX_FILENAME){
+			if(!(file_ext[0] && file_ext)){
+				if(strlen(file_name) > MAX_FILENAME){
 						return -ENAMETOOLONG;
 					}
+			}else{
+					if(strlen(file_ext) > MAX_EXTENSION || strlen(file_name) > MAX_FILENAME){
+					return -ENAMETOOLONG;
+				}
 				}
 			}else {
 				return -EPERM;
@@ -604,13 +604,12 @@ static int cs1550_read(const char *path, char *buf, size_t size, off_t offset,
 				return -EEXIST; //no file
 			}
 
-			if(file_ext && file_ext[0]){	// there is a file extension
-				if(strlen(file_name) > MAX_FILENAME || strlen(file_ext) > MAX_EXTENSION){
+			if(!(file_ext[0] && file_ext)){	// there is a file extension
+				if(strlen(file_name) > MAX_FILENAME){ //check if file name is over the limit
 					return -ENAMETOOLONG;
 				}
-			}
-			else {
-				if(strlen(file_name) > MAX_FILENAME){ //check if file name is over the limit
+			}else {
+				if(strlen(file_ext) > MAX_EXTENSION || strlen(file_name) > MAX_FILENAME){
 					return -ENAMETOOLONG;
 				}
 			}
@@ -789,13 +788,13 @@ static int cs1550_write(const char *path, const char *buf, size_t size,
 				return -EEXIST;
 			}
 
-			if(file_ext && file_ext[0]){
-				if(strlen(file_name) > MAX_FILENAME || strlen(file_ext) > MAX_EXTENSION){
+			if(!(file_ext[0] && file_ext)){
+				if(strlen(file_name) > MAX_FILENAME){
 					return -ENAMETOOLONG;
 				}
-			}
-			else{
-				if(strlen(file_name) > MAX_FILENAME){
+
+			}else{
+				if(strlen(file_ext) > MAX_EXTENSION || strlen(file_name) > MAX_FILENAME){
 					return -ENAMETOOLONG;
 				}
 			}
