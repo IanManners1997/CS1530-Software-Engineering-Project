@@ -89,6 +89,20 @@ struct cs1550_file_alloc_table_block {
 typedef struct cs1550_disk_block cs1550_disk_block;
 
 typedef struct cs1550_file_alloc_table_block cs1550_fat_block;
+int checkDest(char* dest, char*ext, char* file);
+
+int checkDest(char* dest, char* ext, char* file){
+	if((dest && dest[0]) && strlen(dest) > MAX_FILENAME){
+		return -1;
+	}
+	if((file && file[0]) && strlen(file) > MAX_FILENAME){
+		return -1;
+	}
+	if((ext && ext[0]) && strlen(ext) > MAX_EXTENSION){
+		return -1;
+	}
+	return 0;
+}
 
 #define START_ALLOC_BLOCK 2
 
@@ -227,13 +241,8 @@ static int cs1550_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 	char* filename = strtok(NULL, ".");
 	char* extension = strtok(NULL, ".");
 
-	if((destination && destination[0]) && strlen(destination) > MAX_FILENAME){
-		return -ENAMETOOLONG;
-	}
-	if((filename && filename[0]) && strlen(filename) > MAX_FILENAME){
-		return -ENAMETOOLONG;
-	}
-	if((extension && extension[0]) && strlen(extension) > MAX_EXTENSION){
+	int check = checkDest(destination, extension, filename);
+	if(check == -1){
 		return -ENAMETOOLONG;
 	}
 
