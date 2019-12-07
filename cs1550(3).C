@@ -89,7 +89,9 @@ struct cs1550_file_alloc_table_block {
 typedef struct cs1550_disk_block cs1550_disk_block;
 
 typedef struct cs1550_file_alloc_table_block cs1550_fat_block;
+
 int checkDest(char* dest, char*ext, char* file);
+static cs1550_directory findDirectory(cs1550_root_directory rt, char* d);
 
 int checkDest(char* dest, char* ext, char* file){
 	if((dest && dest[0]) && strlen(dest) > MAX_FILENAME){
@@ -102,6 +104,18 @@ int checkDest(char* dest, char* ext, char* file){
 		return -1;
 	}
 	return 0;
+}
+
+static cs1550_directory findDirectory(cs1550_root_directory rt, char* d){
+			int i=0;
+			while(i<MAX_DIRS_IN_ROOT){
+				struct cs1550_directory curr = rt.directories[i];
+				if(strcmp(d, curr.dname) == 0){
+					return curr;
+				}
+				i++;
+			}
+		return NULL;
 }
 
 #define START_ALLOC_BLOCK 2
@@ -469,16 +483,8 @@ static int cs1550_mknod(const char *path, mode_t mode, dev_t dev)
 			fread(&fblock, BLOCK_SIZE, 1 , disk);
 			
 			struct cs1550_directory here;
-
-			int i=0;
-			while(i<MAX_DIRS_IN_ROOT){
-				struct cs1550_directory curr = root.directories[i];
-				if(strcmp(dir, curr.dname) == 0){
-					here = curr;
-					break;
-				}
-				i++;
-			}
+			here = findDirectory(root, dir);
+			
 
 			if(strcmp(here.dname, "") != 0){
 				long dirloc = BLOCK_SIZE*here.nStartBlock;
@@ -639,17 +645,7 @@ static int cs1550_read(const char *path, char *buf, size_t size, off_t offset,
 		fread(&fblock, BLOCK_SIZE, 1 , disk);
 
 		struct cs1550_directory here;
-
-		int i=0;
-		while(i<MAX_DIRS_IN_ROOT){ // find the right directory
-			struct cs1550_directory curr = root.directories[i];
-			if(strcmp(dir, curr.dname) == 0){
-				here = curr;
-				break;
-			}
-			i++;
-		}
-
+		here = findDirectory(root, dir );
 		if(strcmp(here.dname, "") != 0){ //the correct directory was found
 			long loc = BLOCK_SIZE*here.nStartBlock;
 			FILE* disk = fopen(".disk", "r+b");
@@ -826,16 +822,7 @@ static int cs1550_write(const char *path, const char *buf, size_t size,
 		fread(&fblock, BLOCK_SIZE, 1 , disk);
 
 		struct cs1550_directory here;
-
-		int i=0;
-		while(i<MAX_DIRS_IN_ROOT){
-			struct cs1550_directory current = root.directories[i];
-			if(strcmp(dir, current.dname) == 0){
-				here = current;
-				break;
-			}
-			i++;
-		}
+		here = findDirectory(root, dir);
 
 		if(strcmp(here.dname, "") != 0){
 			long location = BLOCK_SIZE*here.nStartBlock;
