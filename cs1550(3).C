@@ -92,37 +92,6 @@ typedef struct cs1550_file_alloc_table_block cs1550_fat_block;
 
 #define START_ALLOC_BLOCK 2
 
-static cs1550_root_directory read_root(void);
-static cs1550_fat_block read_fat(void);
-
-static cs1550_root_directory read_root(){
-	FILE* disk = fopen(".disk", "r+b");
-	fseek(disk, 0, SEEK_SET);
-	cs1550_root_directory root;
-	fread(&root, BLOCK_SIZE, 1, disk);
-	return root;
-}
-
-static cs1550_fat_block read_fat(){
-	FILE* disk = fopen(".disk", "r+b");
-	fseek(disk, BLOCK_SIZE, SEEK_SET);
-	cs1550_fat_block fblock;
-	fread(&fblock, BLOCK_SIZE, 1 , disk);
-	return fblock;
-}
-
-static void write_root(cs1550_root_directory* root_on_disk){
-	FILE* disk = fopen(".disk", "r+b");
-	fwrite(root_on_disk, BLOCK_SIZE, 1, disk);
-	fclose(disk);
-}
-
-static void write_fat(cs1550_fat_block* fat_on_disk){
-	FILE* disk = fopen(".disk", "r+b");
-	fseek(disk, BLOCK_SIZE, SEEK_SET);
-	fwrite(fat_on_disk, BLOCK_SIZE, 1, disk);
-	fclose(disk);
-}
 /*
  * Called whenever the system wants to know the file attributes, including
  * simply whether the file exists or not.
@@ -131,6 +100,7 @@ static void write_fat(cs1550_fat_block* fat_on_disk){
  */
 static int cs1550_getattr(const char *path, struct stat *stbuf)
 {
+	FILE* disk;
 	int res = 0;
 
 	char directory[MAX_FILENAME + 1];
@@ -160,7 +130,11 @@ static int cs1550_getattr(const char *path, struct stat *stbuf)
 		else{
 			struct cs1550_directory dir;
 			int foundDirectory = 0;
-			cs1550_root_directory root = read_root();
+			cs1550_root_directory root;
+		    disk = fopen(".disk", "r+b");
+			fseek(disk, 0, SEEK_SET);
+			fread(&root, BLOCK_SIZE, 1, disk);
+			
 		// Check to see if the given directory is one in the root
 			int i = 0;
 			while(i<root.nDirectories){
@@ -187,7 +161,7 @@ static int cs1550_getattr(const char *path, struct stat *stbuf)
 				return res;
 			}
 
-			FILE* disk = fopen(".disk", "r+b");
+			disk = fopen(".disk", "r+b");
 			int loc = BLOCK_SIZE*dir.nStartBlock;	// find location of directory on disk
 			fseek(disk, loc, SEEK_SET);	//navigate to directory location
 			cs1550_directory_entry ent;
@@ -236,6 +210,7 @@ static int cs1550_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 	//Since we're building with -Wall (all warnings reported) we need
 	//to "use" every parameter, so let's just cast them to void to
 	//satisfy the compiler
+	FILE* disk;
 	(void) offset;
 	(void) fi;
 
@@ -263,7 +238,10 @@ static int cs1550_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 	}
 
 	if (strcmp(path, "/") == 0){
-		cs1550_root_directory root = read_root();
+		cs1550_root_directory root;
+		disk = fopen(".disk", "r+b");
+		fseek(disk, 0, SEEK_SET);
+		fread(&root, BLOCK_SIZE, 1, disk);
 		// all directories in the root
 		int i = 0;
 		while(i<MAX_DIRS_IN_ROOT){
@@ -279,7 +257,10 @@ static int cs1550_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 		struct cs1550_directory curr;
 		strcpy(curr.dname, "");
 		curr.nStartBlock = -1;
-		cs1550_root_directory root = read_root();
+		cs1550_root_directory root;
+		FILE* disk = fopen(".disk", "r+b");
+		fseek(disk, 0, SEEK_SET);
+		fread(&root, BLOCK_SIZE, 1, disk);
 		while(i<MAX_DIRS_IN_ROOT){
 			if(strcmp(destination, root.directories[i].dname) == 0){
 				curr = root.directories[i];
@@ -329,6 +310,7 @@ static int cs1550_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 static int cs1550_mkdir(const char *path, mode_t mode)
 {
 	(void) path;
+	FILE* disk;
 	(void) mode;
 
 	char* dir;
@@ -348,8 +330,15 @@ static int cs1550_mkdir(const char *path, mode_t mode)
 		return -EPERM;
 	}
 
-	cs1550_root_directory root = read_root();
-	cs1550_fat_block fblock = read_fat();
+	cs1550_root_directory root;
+	disk = fopen(".disk", "r+b");
+	fseek(disk, 0, SEEK_SET);
+	fread(&root, BLOCK_SIZE, 1, disk);
+
+	cs1550_fat_block fblock;
+	disk = fopen(".disk", "r+b");
+	fseek(disk, BLOCK_SIZE, SEEK_SET);
+	fread(&fblock, BLOCK_SIZE, 1 , disk);
 
 	// directories list is full
 	if(root.nDirectories >= MAX_DIRS_IN_ROOT){
@@ -393,8 +382,12 @@ static int cs1550_mkdir(const char *path, mode_t mode)
 				root.nDirectories++;
 				root.directories[j] = newdir;
 
-				write_root(&root);
-				write_fat(&fblock);
+				disk = fopen(".disk", "r+b");
+				fwrite(&root, BLOCK_SIZE, 1, disk);
+				disk = fopen(".disk", "r+b");
+				fseek(disk, BLOCK_SIZE, SEEK_SET);
+				fwrite(&fblock, BLOCK_SIZE, 1, disk);
+				fclose(disk);
 			}
 			else {
 				fclose(disk);
@@ -424,7 +417,7 @@ static int cs1550_mknod(const char *path, mode_t mode, dev_t dev)
 {
 	(void) mode;
 	(void) dev;
-
+	FILE* disk;
 	char* dir;
 	char* file_name;
 	char* file_ext;
@@ -456,9 +449,16 @@ static int cs1550_mknod(const char *path, mode_t mode, dev_t dev)
 				return -EPERM;
 			}
 
-			cs1550_root_directory root = read_root();
-			cs1550_fat_block fblock = read_fat();
+			cs1550_root_directory root;
+			disk = fopen(".disk", "r+b");
+			fseek(disk, 0, SEEK_SET);
+			fread(&root, BLOCK_SIZE, 1, disk);
 
+			cs1550_fat_block fblock;
+			disk = fopen(".disk", "r+b");
+			fseek(disk, BLOCK_SIZE, SEEK_SET);
+			fread(&fblock, BLOCK_SIZE, 1 , disk);
+			
 			struct cs1550_directory here;
 
 			int i=0;
@@ -532,8 +532,12 @@ static int cs1550_mknod(const char *path, mode_t mode, dev_t dev)
 
 						fclose(disk);
 
-						write_root(&root);
-						write_fat(&fblock);
+						disk = fopen(".disk", "r+b");
+						fwrite(&root, BLOCK_SIZE, 1, disk);
+						disk = fopen(".disk", "r+b");
+						fseek(disk, BLOCK_SIZE, SEEK_SET);
+						fwrite(&fblock, BLOCK_SIZE, 1, disk);
+						fclose(disk);
 					}
 					else{
 						fclose(disk);
@@ -574,6 +578,7 @@ static int cs1550_unlink(const char *path)
 static int cs1550_read(const char *path, char *buf, size_t size, off_t offset,
 			  struct fuse_file_info *fi)
 {
+	FILE* disk;
 	(void) buf;
 	(void) offset;
 	(void) fi;
@@ -613,8 +618,16 @@ static int cs1550_read(const char *path, char *buf, size_t size, off_t offset,
 			return -EEXIST;
 		}
 
-		cs1550_root_directory root = read_root();
-		cs1550_fat_block fblock = read_fat();
+		cs1550_root_directory root;
+		disk = fopen(".disk", "r+b");
+		fseek(disk, 0, SEEK_SET);
+		fread(&root, BLOCK_SIZE, 1, disk);
+
+
+		cs1550_fat_block fblock;
+		disk = fopen(".disk", "r+b");
+		fseek(disk, BLOCK_SIZE, SEEK_SET);
+		fread(&fblock, BLOCK_SIZE, 1 , disk);
 
 		struct cs1550_directory here;
 
@@ -711,8 +724,12 @@ static int cs1550_read(const char *path, char *buf, size_t size, off_t offset,
 
 					fclose(disk);
 
-					write_root(&root);
-					write_fat(&fblock);
+					disk = fopen(".disk", "r+b");
+					fwrite(&root, BLOCK_SIZE, 1, disk);
+					disk = fopen(".disk", "r+b");
+					fseek(disk, BLOCK_SIZE, SEEK_SET);
+					fwrite(&fblock, BLOCK_SIZE, 1, disk);
+					fclose(disk);
 
 					size = currsize;
 				}
@@ -749,6 +766,7 @@ static int cs1550_read(const char *path, char *buf, size_t size, off_t offset,
 static int cs1550_write(const char *path, const char *buf, size_t size,
 			  off_t offset, struct fuse_file_info *fi)
 {
+	FILE* disk;
 	(void) buf;
 	(void) offset;
 	(void) fi;
@@ -787,8 +805,16 @@ static int cs1550_write(const char *path, const char *buf, size_t size,
 			return -EEXIST;
 		}
 
-		cs1550_root_directory root = read_root();
-		cs1550_fat_block fblock = read_fat();
+		cs1550_root_directory root;
+		disk = fopen(".disk", "r+b");
+		fseek(disk, 0, SEEK_SET);
+		fread(&root, BLOCK_SIZE, 1, disk);
+
+
+		cs1550_fat_block fblock;
+		disk = fopen(".disk", "r+b");
+		fseek(disk, BLOCK_SIZE, SEEK_SET);
+		fread(&fblock, BLOCK_SIZE, 1 , disk);
 
 		struct cs1550_directory here;
 
@@ -943,8 +969,12 @@ static int cs1550_write(const char *path, const char *buf, size_t size,
 
 					fclose(disk);
 
-					write_root(&root);
-					write_fat(&fblock);
+					disk = fopen(".disk", "r+b");
+					fwrite(&root, BLOCK_SIZE, 1, disk);
+					disk = fopen(".disk", "r+b");
+					fseek(disk, BLOCK_SIZE, SEEK_SET);
+					fwrite(&fblock, BLOCK_SIZE, 1, disk);
+					fclose(disk);
 
 					size = buffer_size;
 				}
