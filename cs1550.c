@@ -658,13 +658,13 @@ static int cs1550_read(const char *path, char *buf, size_t size, off_t offset,
 					struct cs1550_file_directory curdir = ent.files[j];
 
 					if(strcmp(curdir.fname, file_name) == 0){ //found the file
-						if(file_ext && file_ext[0]){
-							if(strcmp(curdir.fext, file_ext) == 0){ //extension match
+							if(strcmp(curdir.fext, "") == 0){
 								file = curdir;
 								break;
 							}
-						}else {
-							if(strcmp(curdir.fext, "") == 0){
+						}else{
+							if(!(file_ext[0] && file_ext)){
+							if(strcmp(curdir.fext, file_ext) == 0){ //extension match
 								file = curdir;
 								break;
 							}
@@ -742,11 +742,11 @@ static int cs1550_read(const char *path, char *buf, size_t size, off_t offset,
 			}
 		}
 		else {
-			if(strcmp(dir, "") == 0){
-				return 0;
-			}
-			else if(strcmp(file_name, "") == 0){
+			if(strcmp(file_name, "") == 0){
 				return -EPERM;
+			}
+			else if(strcmp(dir, "") == 0){
+				return 0;
 			}
 		}
 	}
@@ -782,8 +782,8 @@ static int cs1550_write(const char *path, const char *buf, size_t size,
 	file_name = strtok(NULL, ".");
 	file_ext = strtok(NULL, ".");
 	dir = strtok(copy, "/");
-	if((dir && dir[0]) && strcmp(dir, "") != 0){
-		if(file_name && file_name[0]){
+	if(strcmp(dir, "") != 0  && (dir && dir[0])){
+		if(file_name[0] && file_name){
 			if(strcmp(file_name, "") == 0){
 				return -EEXIST;
 			}
@@ -985,11 +985,10 @@ static int cs1550_write(const char *path, const char *buf, size_t size,
 			}
 		}
 		else {
-			if(strcmp(dir, "") == 0){
-				return 0;
-			}
-			else if(strcmp(file_name, "") == 0){
+			if(strcmp(file_name, "") == 0){
 				return -EPERM;
+			}else if(strcmp(dir, "") == 0){
+				return 0;
 			}
 		}
 	}
