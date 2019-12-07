@@ -115,12 +115,12 @@ int checkDest(char* dest, char* ext, char* file){
  */
 static int cs1550_getattr(const char *path, struct stat *stbuf)
 {
-	strcpy(directory, "");
-	strcpy(filename, "");
-	strcpy(extension, "");
 	char directory[MAX_FILENAME + 1];
+	strcpy(directory, "");
 	char filename[MAX_FILENAME + 1];
+	strcpy(filename, "");
 	char extension[MAX_EXTENSION + 1];
+	strcpy(extension, "");
 	FILE* disk;
 	int res = 0;
 
@@ -224,22 +224,23 @@ static int cs1550_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 	//Since we're building with -Wall (all warnings reported) we need
 	//to "use" every parameter, so let's just cast them to void to
 	//satisfy the compiler
+	int length = strlen(path);
+	char copy[length];
+	strcpy(copy, path);
 	FILE* disk;
 	(void) offset;
 	(void) fi;
-
+	char* destination = strtok(copy, "/");
+	char* filename = strtok(NULL, ".");
+	char* extension = strtok(NULL, ".");
 	//the filler function allows us to add entries to the listing
 	//read the fuse.h file for a description (in the ../include dir)
 	filler(buf, ".", NULL, 0);
 	filler(buf, "..", NULL, 0);
 
-	int length = strlen(path);
-	char copy[length];
-	strcpy(copy, path);
+	
 
-	char* destination = strtok(copy, "/");
-	char* filename = strtok(NULL, ".");
-	char* extension = strtok(NULL, ".");
+	
 
 	int check = checkDest(destination, extension, filename);
 	if(check == -1){
@@ -321,14 +322,11 @@ static int cs1550_mkdir(const char *path, mode_t mode)
 	(void) path;
 	FILE* disk;
 	(void) mode;
-
-	char* dir;
-	char* subdir;
-
 	int length = strlen(path);
 	char copy[length];
 	strcpy(copy, path);
-
+	char* dir;
+	char* subdir;
 	dir = strtok(copy, "/");
 	subdir = strtok(NULL, "/");
 
@@ -426,19 +424,17 @@ static int cs1550_mknod(const char *path, mode_t mode, dev_t dev)
 {
 	(void) mode;
 	(void) dev;
-	FILE* disk;
-	char* dir;
 	char* file_name;
 	char* file_ext;
-
+	FILE* disk;
+	char* dir;
 	int length = strlen(path);
 	char copy[length];
 	strcpy(copy, path);
-
-	dir = strtok(copy, "/");
 	file_name = strtok(NULL, ".");
 	file_ext = strtok(NULL, ".");
 
+	dir = strtok(copy, "/");
 	if ((dir && dir[0]) && strcmp(dir, "") != 0){
 		if(file_name && file_name[0]){
 			if(strcmp(file_name, "") == 0){
@@ -592,19 +588,15 @@ static int cs1550_read(const char *path, char *buf, size_t size, off_t offset,
 	(void) offset;
 	(void) fi;
 	(void) path;
-
-	char* dir;
-	char* file_name;
-	char* file_ext;
-
 	int length = strlen(path);
 	char copy[length];
 	strcpy(copy, path);
-
-	dir = strtok(copy, "/");
+	char* file_name;
+	char* file_ext;
+	char* dir;
 	file_name = strtok(NULL, ".");
 	file_ext = strtok(NULL, ".");
-
+	dir = strtok(copy, "/");
 
 	if((dir && dir[0]) && strcmp(dir, "") != 0){ //there is a directory
 		if(file_name && file_name[0]){
@@ -781,18 +773,16 @@ static int cs1550_write(const char *path, const char *buf, size_t size,
 	(void) fi;
 	(void) path;
 
-	char* dir;
-	char* file_name;
-	char* file_ext;
-
 	int length = strlen(path);
 	char copy[length];
 	strcpy(copy, path);
 
-	dir = strtok(copy, "/");
+	char* file_name;
+	char* file_ext;
+	char* dir;
 	file_name = strtok(NULL, ".");
 	file_ext = strtok(NULL, ".");
-
+	dir = strtok(copy, "/");
 	if((dir && dir[0]) && strcmp(dir, "") != 0){
 		if(file_name && file_name[0]){
 			if(strcmp(file_name, "") == 0){
